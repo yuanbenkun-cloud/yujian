@@ -11,7 +11,7 @@ const PLATE_Y := -96.0
 const WORLD_GROUND_Y := 240.0
 const MID_GROUND_OVERLAP := 7.0
 const STAGE_START := -2200.0
-const STAGE_END := 3600.0
+const STAGE_END := 4600.0
 
 const PROFILES := {
 	"01": {"sky_tint": Color(0.82, 0.86, 1.0, 1.0), "far_tint": Color(0.72, 0.78, 0.94, 0.84), "mid_tint": Color(0.82, 0.86, 1.0, 0.93), "fog": Color(0.24, 0.34, 0.58, 0.13), "fore_fog": Color(0.08, 0.12, 0.24, 0.08)},

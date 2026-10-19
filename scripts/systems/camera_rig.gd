@@ -9,6 +9,13 @@ var _shake_strength: float = 4.0
 var _shake_duration: float = 0.3
 var _shake_time: float = 0.0
 
+func _ready() -> void:
+	var level_root := get_parent().get_parent()
+	if level_root == null:
+		level_root = get_tree().current_scene
+	if level_root != null and level_root.has_meta("camera_right_limit"):
+		limit_right = int(level_root.get_meta("camera_right_limit"))
+
 func _process(delta: float) -> void:
 	if _shake_remaining > 0.0:
 		_shake_remaining -= delta

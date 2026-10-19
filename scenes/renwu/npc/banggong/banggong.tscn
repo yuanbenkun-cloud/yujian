@@ -50,17 +50,17 @@ _data = {
 &"ambient": SubResource("Animation_xwhbn")
 }
 
-[node name="banggong" type="Area2D" unique_id=1236441162]
+[node name="banggong" type="Area2D" unique_id=32550867]
 script = ExtResource("1_hqle6")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=2088930743]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=424208394]
 z_index = 20
 
-[node name="banggong_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=2131116155]
+[node name="banggong_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=2065179641]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_b7ghv")
 
-[node name="banggong_tishi" type="ColorRect" parent="." unique_id=1793175984]
+[node name="banggong_tishi" type="ColorRect" parent="." unique_id=561240802]
 z_index = 35
 offset_left = -9.0
 offset_top = -58.0
@@ -68,7 +68,7 @@ offset_right = 9.0
 offset_bottom = -40.0
 color = Color(0.05, 0.08, 0.12, 0.92)
 
-[node name="KeyLabel" type="Label" parent="banggong_tishi" unique_id=15301900]
+[node name="KeyLabel" type="Label" parent="banggong_tishi" unique_id=1048175411]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 5.0
@@ -76,6 +76,6 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1, 0.81960785, 0.4, 1)
 text = "E"
 
-[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=786648778]
+[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=376913957]
 libraries/ = SubResource("AnimationLibrary_qdfhw")
 autoplay = &"ambient"

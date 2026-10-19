@@ -90,7 +90,7 @@ func instantiate_npc(
 ## ---- Phase 8 背景辅助 ----
 
 ## 可复用的五层横向舞台：天空 / 远景 / 中景 / 近雾 / 前景。
-func make_background(root: Node, cols: Array, era: String) -> ParallaxBackground:
+func make_background(root: Node, cols: Array, era: String, world_left: float = -700.0, world_right: float = 2500.0) -> ParallaxBackground:
 	var packed: PackedScene = load("res://scenes/background/parallax_stage.tscn")
 	if packed == null:
 		push_error("无法加载共享视差舞台")
@@ -100,6 +100,16 @@ func make_background(root: Node, cols: Array, era: String) -> ParallaxBackground
 	pbg.call("configure", era, cols)
 	root.add_child(pbg)
 	root.move_child(pbg, 1)
+	var ambient := Node2D.new()
+	ambient.name = "AmbientLife"
+	bind_script(ambient, "res://scripts/background/ambient_life.gd")
+	ambient.call("configure", era, world_left, world_right)
+	root.add_child(ambient)
+	var weather := CanvasLayer.new()
+	weather.name = "WeatherSystem"
+	bind_script(weather, "res://scripts/background/weather_system.gd")
+	weather.call("configure", era, world_left, world_right)
+	root.add_child(weather)
 	return pbg
 
 ## WorldEnvironment：glow + adjustments + vignette（bg_col 为环境底色）
@@ -137,14 +147,6 @@ func make_light_rig(root: Node, tone: Color, lights: Array) -> void:
 		rig.add_child(p)
 	bind_script(rig, "res://scripts/background/light_rig.gd")
 
-const CROWD_SKINS := [
-	"res://assets/generated/npc_helper.png",
-	"res://assets/generated/npc_oldman.png",
-	"res://assets/generated/npc_aming.png",
-	"res://assets/generated/npc_teahouse.png",
-	"res://assets/generated/npc_flyerlady.png",
-]
-
 ## 人群路障：物理阻挡 + 多名路人立绘（追逐战掩体 → 人群）
 func make_crowd(root: Node, cid: int, cx: float, w: float, h: float) -> void:
 	var body := AnimatableBody2D.new()
@@ -159,18 +161,6 @@ func make_crowd(root: Node, cid: int, cx: float, w: float, h: float) -> void:
 	cr.b = Vector2(-w / 2.0, h / 2.0)
 	csh.shape = cr
 	body.add_child(csh)
-	var n := 3
-	var stepx := w / float(n + 1)
-	for i in range(n):
-		var tex: Texture2D = load(CROWD_SKINS[(cid + i) % CROWD_SKINS.size()])
-		if tex == null:
-			continue
-		var sp := Sprite2D.new()
-		sp.texture = tex
-		sp.centered = false
-		sp.flip_h = (cid + i) % 2 == 0
-		sp.position = Vector2(-w / 2.0 + stepx * float(i + 1) - 16.0, h / 2.0 - 46.0)
-		body.add_child(sp)
 
 
 ## ---- C/D：无缝背景艺术层 + 场景摆件 ----
@@ -184,7 +174,7 @@ const TERRAIN_DIRS := {
 	"05": "res://assets/raw/素材2/背景/05洪崖洞-归来晨光",
 }
 
-func add_scene_art(pbg: ParallaxBackground, ground: Node, era: String) -> void:
+func add_scene_art(pbg: ParallaxBackground, ground: Node, era: String, world_left: float = -700.0, world_right: float = 2500.0) -> void:
 	if not TERRAIN_DIRS.has(era) or pbg == null:
 		return
 	# 天空、远景和中景由共享 ParallaxStage 在运行时装配；
@@ -195,15 +185,14 @@ func add_scene_art(pbg: ParallaxBackground, ground: Node, era: String) -> void:
 		if tex != null:
 			var s := 150.0 / float(tex.get_height())
 			var step_x := float(tex.get_width()) * s
-			var n := int(ceil(3250.0 / step_x)) + 1
+			var n := int(ceil((world_right - world_left) / step_x)) + 1
 			for i in range(n):
 				var sp := Sprite2D.new()
 				sp.name = "TerrainTile"
 				sp.texture = tex
 				sp.centered = false
 				sp.scale = Vector2(s, s)
-				# Ground 位于世界 x=900；其局部 -1600 正好对应世界左边界 -700。
-				sp.position = Vector2(-1600.0 + float(i) * step_x, -20.0)
+				sp.position = Vector2(world_left - ground.position.x + float(i) * step_x, -20.0)
 				sp.z_index = 10
 				ground.add_child(sp)
 
@@ -232,7 +221,7 @@ func add_object_behind(ground: Node, path: String, wx: float, h: float) -> void:
 				break
 	spr.scale = Vector2(s, s)
 	# 透明画布的底部留白不应被算进落地点；可见底边再压入地面 8px。
-	spr.position = Vector2(wx - 900.0 - float(tex.get_width()) * s * 0.5, -12.0 - h + bottom_padding * s)
+	spr.position = Vector2(wx - ground.position.x - float(tex.get_width()) * s * 0.5, -12.0 - h + bottom_padding * s)
 	ground.add_child(spr)
 
 func add_goal_portal_visual(parent: Node, active: bool = true) -> Node2D:

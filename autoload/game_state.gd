@@ -10,6 +10,17 @@ var insight_flags: Dictionary = {}   # 历史领悟（第五关等使用）
 var saved_level: int = 0
 var highest_unlocked_level: int = 1
 var story_completed := false
+var completed_levels: Array[int] = []
+
+func record_level_completed(level: int) -> void:
+	if level < 1 or level > 5 or completed_levels.has(level): return
+	completed_levels.append(level)
+	_save_story()
+
+func can_enter_future() -> bool:
+	for level in range(1, 6):
+		if not completed_levels.has(level): return false
+	return true
 var ending_choice := "observe"
 var photo_timestamp := ""
 
@@ -82,6 +93,7 @@ func get_continue_level() -> int:
 	return clampi(saved_level, 1, 5)
 
 func mark_story_complete(choice: String) -> void:
+	record_level_completed(5)
 	ending_choice = choice
 	story_completed = true
 	saved_level = 0
@@ -110,10 +122,10 @@ func apply_goods_event(event_name: String) -> void:
 	_save_story()
 
 func get_result_tier() -> String:
-	## 只有 100% 才算完好；第三关现在任何货损都会在送达验货后失败。
+	## 100% 完好；50%及以上仍可交付；严格低于一半才失败。
 	if goods_integrity >= 100:
 		return "完好"
-	if goods_integrity >= 40:
+	if goods_integrity >= 50:
 		return "受损"
 	return "严重受损"
 
@@ -122,6 +134,8 @@ func _save_story() -> void:
 	cfg.set_value("progress", "saved_level", saved_level)
 	cfg.set_value("progress", "highest_unlocked_level", highest_unlocked_level)
 	cfg.set_value("progress", "story_completed", story_completed)
+	cfg.set_value("progress", "completed_levels", completed_levels)
+	cfg.set_value("progress", "clear_records_version", 2)
 	cfg.set_value("progress", "ending_choice", ending_choice)
 	cfg.set_value("progress", "photo_timestamp", photo_timestamp)
 	cfg.set_value("run", "goods_integrity", goods_integrity)
@@ -137,6 +151,17 @@ func _load_story() -> void:
 	saved_level = int(cfg.get_value("progress", "saved_level", 0))
 	highest_unlocked_level = int(cfg.get_value("progress", "highest_unlocked_level", 1))
 	story_completed = bool(cfg.get_value("progress", "story_completed", false))
+	completed_levels.clear()
+	var cleared: Variant = cfg.get_value("progress", "completed_levels", [])
+	if int(cfg.get_value("progress", "clear_records_version", 0)) >= 2 and cleared is Array:
+		for level: Variant in cleared:
+			if level is int and level >= 1 and level <= 5 and not completed_levels.has(level): completed_levels.append(level)
+	# Old lists may have been inferred from a debug ending. Never manufacture clear records.
+	# Keep the original save recoverable before the first corrected save overwrites it.
+	if int(cfg.get_value("progress", "clear_records_version", 0)) < 2:
+		var backup: String = SAVE_PATH + ".before_verified_clears.bak"
+		if not FileAccess.file_exists(backup):
+			DirAccess.copy_absolute(ProjectSettings.globalize_path(SAVE_PATH), ProjectSettings.globalize_path(backup))
 	ending_choice = str(cfg.get_value("progress", "ending_choice", "observe"))
 	photo_timestamp = str(cfg.get_value("progress", "photo_timestamp", ""))
 	goods_integrity = clampi(int(cfg.get_value("run", "goods_integrity", 100)), 0, 100)

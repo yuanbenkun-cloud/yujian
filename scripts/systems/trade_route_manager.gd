@@ -22,13 +22,15 @@ func _ready() -> void:
 	if gs != null and not gs.is_connected("goods_changed", _on_goods_changed):
 		gs.connect("goods_changed", _on_goods_changed)
 	if gs != null:
-		delivery_compromised = int(gs.get("goods_integrity")) < 100
+		delivery_compromised = int(gs.get("goods_integrity")) < 50
 	_refresh()
 
 func can_use(required_stage: int) -> bool:
 	return stage == required_stage
 
 func advance_stage(next_stage: int) -> void:
+	var guide: Node = get_node_or_null("/root/QuestGuide")
+	if guide != null: guide.call("request_refresh")
 	stage = maxi(stage, next_stage)
 	_refresh()
 	_pop_feedback("新目标：%s" % STAGE_TEXTS[stage], Color("#9fd9b5"))
@@ -40,13 +42,16 @@ func show_locked(required_stage: int) -> void:
 func show_completed() -> void:
 	_pop_feedback("这段托付已经完成，继续向前", Color("#9fd9b5"))
 
+func report_hazard(hazard_name: String) -> void:
+	_pop_feedback("%s擦过货包——先把染布送到码头验货" % hazard_name, Color("#ff7474"))
+
 func _on_goods_changed(current: int, delta: int, _event_name: String) -> void:
 	_refresh_integrity(current)
 	if delta < 0:
-		delivery_compromised = true
+		delivery_compromised = current < 50
 		var audio := get_node_or_null("/root/AudioManager")
 		if audio != null: audio.call("play_event", "cloth", 0.82, -2.0)
-		_pop_feedback("染布已受损：仍须送到老周处验货" , Color("#ff7474"))
+		_pop_feedback("染布不足50%：送到码头后须重新护送" if delivery_compromised else "染布受损，但剩余至少50%仍可交付", Color("#ff7474") if delivery_compromised else Color("#ffd080"))
 		var camera := get_tree().current_scene.find_child("Camera2D", true, false)
 		if camera != null and camera.has_method("shake"):
 			camera.call("shake", 2.2, 0.16)
@@ -57,7 +62,7 @@ func _on_goods_changed(current: int, delta: int, _event_name: String) -> void:
 
 func _refresh() -> void:
 	if _objective != null:
-		var warning := "　（受损，送达后结算）" if delivery_compromised else ""
+		var warning := "　（不足50%，无法交付）" if delivery_compromised else ""
 		_objective.text = "托付 %d/4　%s%s" % [stage, STAGE_TEXTS[stage], warning]
 	var gs := get_node_or_null("/root/GameState")
 	if gs != null:
@@ -67,9 +72,9 @@ func _refresh_integrity(value: int) -> void:
 	if _integrity == null:
 		return
 	_integrity.value = value
-	_integrity_text.text = "染布 %d%%" % value
+	_integrity_text.text = "染布 %d%% / 至少50%%" % value
 	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color("#7fb58c") if value >= 70 else (Color("#d5a64f") if value >= 40 else Color("#c65353"))
+	fill.bg_color = Color("#7fb58c") if value >= 70 else (Color("#d5a64f") if value >= 50 else Color("#c65353"))
 	fill.set_corner_radius_all(3)
 	_integrity.add_theme_stylebox_override("fill", fill)
 
@@ -96,7 +101,7 @@ func _build_hud() -> void:
 		return
 	_objective = Label.new()
 	_objective.name = "UI_TradeObjective"
-	_objective.position = Vector2(12, 8)
+	_objective.position = Vector2(12, 46)
 	_objective.size = Vector2(390, 22)
 	_objective.add_theme_font_size_override("font_size", 12)
 	_objective.add_theme_color_override("font_color", Color("#f0dfbe"))
@@ -122,7 +127,7 @@ func _build_hud() -> void:
 	ui.add_child(_integrity_text)
 	_feedback = Label.new()
 	_feedback.name = "UI_TradeFeedback"
-	_feedback.position = Vector2(155, 50)
+	_feedback.position = Vector2(155, 74)
 	_feedback.size = Vector2(330, 24)
 	_feedback.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_feedback.add_theme_font_size_override("font_size", 13)

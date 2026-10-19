@@ -10,6 +10,7 @@ const CHAPTERS := {
 	3: ["第三章", "一段托付", "中山古镇 · 雨巷", "水声退去，市声迎面而来。一包染布，把陌生人连在一起。"],
 	4: ["第四章", "警报之下", "重庆防空洞 · 1941", "货包的绳结还在掌心，防空警报已经撕开山城。"],
 	5: ["第五章", "天亮以后", "洪崖洞 · 清晨", "最后一个人走进光里。他回到了同一条街。"],
+	6: ["第六章", "城市还记得", "重庆 · 2086年（未来想象）", "渝灯带着五段旧时光，照向重庆还没写完的明天。"],
 }
 
 const TRANSITION_STORIES := {
@@ -40,10 +41,10 @@ const TRANSITION_STORIES := {
 }
 
 const PROLOGUE_COMIC := [
-	{"art": "res://assets/production/story/prologue-v2/panel-1.png", "title": "赶去洪崖洞打卡", "body": "陈默只惦记着最火的夜景机位，再晚一点，人只会更多。"},
-	{"art": "res://assets/production/story/prologue-v2/panel-2.png", "title": "主路太挤，那就抄小路", "body": "导航上的灰色窄巷看起来能绕开游客。他没多想，转身钻了进去。"},
-	{"art": "res://assets/production/story/prologue-v2/panel-3.png", "title": "小路上还是遇见了她", "body": "传单阿姨正守在巷口：‘小伙子，帮我扫一个吧，今天还差两单。’"},
-	{"art": "res://assets/production/story/prologue-v2/panel-4.png", "title": "怎么抄小路也躲不开", "body": "陈默嫌她麻烦，敷衍一句便转身跑。阿姨攥着传单追了上来。"},
+	{"art": "res://assets/production/story/prologue-v3/atlas.png", "crop": Rect2(0, 0, 0.5, 0.5), "title": "赶去洪崖洞打卡", "body": "陈默只惦记着最火的夜景机位。\n再晚一点，人只会更多。"},
+	{"art": "res://assets/production/story/prologue-v3/atlas.png", "crop": Rect2(0.5, 0, 0.5, 0.5), "title": "主路太挤，那就抄小路", "body": "导航上的窄巷似乎能绕开游客。\n他没多想，转身钻了进去。"},
+	{"art": "res://assets/production/story/prologue-v3/atlas.png", "crop": Rect2(0, 0.5, 0.5, 0.5), "title": "小路上还是遇见了她", "body": "阿姨递来传单：‘小伙子，帮我扫一个吧，\n今天还差两单。’"},
+	{"art": "res://assets/production/story/prologue-v3/atlas.png", "crop": Rect2(0.5, 0.5, 0.5, 0.5), "title": "怎么抄小路也躲不开", "body": "陈默敷衍一句便转身跑。\n阿姨攥着传单追了上来。"},
 ]
 
 const COMIC_STORIES := {
@@ -62,8 +63,8 @@ const COMIC_STORIES := {
 	4: [
 		{"art": "res://assets/production/story/level3-trust.png", "crop": Rect2(0.00, 0.18, 0.52, 0.67), "title": "货赶上了船", "body": "老周刚系紧布包，刺耳警报便穿过雨幕。下一道残影骤然张开。", "sfx": "alert"},
 		{"art": "res://assets/production/story/level4-responsibility.png", "crop": Rect2(0.00, 0.03, 0.48, 0.61), "title": "重庆，1941", "body": "炸弹正落向山城。陈默跌进防空洞，出口被烟尘和塌木切断。", "sfx": "explosion"},
-		{"art": "res://assets/production/story/level4-responsibility.png", "crop": Rect2(0.33, 0.25, 0.49, 0.61), "title": "引路人倒下了", "body": "伤者把煤油灯塞给他：沿挡板去东口，把这里六个人都带出去。"},
-		{"art": "res://assets/production/story/level4-responsibility.png", "crop": Rect2(0.47, 0.10, 0.50, 0.82), "title": "他本可以一个人跑", "body": "孩子抓住他的衣角。陈默转身举高灯：跟紧我，一个也别落下。"},
+		{"art": "res://assets/production/story/level4-responsibility.png", "crop": Rect2(0.33, 0.25, 0.49, 0.61), "title": "引路人倒下了", "body": "伤者指向东口：沿挡板走，把这里六个人都带出去。渝灯飞到前方，照亮了脚下的路。"},
+		{"art": "res://assets/production/story/level4-responsibility.png", "crop": Rect2(0.47, 0.10, 0.50, 0.82), "title": "他本可以一个人跑", "body": "孩子抓住他的衣角。渝灯在前方亮起，陈默转身招呼：跟紧我，一个也别落下。"},
 	],
 	5: [
 		{"art": "res://assets/production/story/level4-responsibility.png", "crop": Rect2(0.28, 0.20, 0.61, 0.67), "title": "最后一人走进光里", "body": "身后的脚步一个不少。洞口的裂光这才重新出现。"},
@@ -229,7 +230,7 @@ func _build_overlay(level: int, accent: Color, illustration_path: String = "") -
 	_backdrop.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	_backdrop.size = VIEW_SIZE + (Vector2(24, 4) if _illustration_mode else Vector2(64, 36))
 	_backdrop.position = Vector2(-2, -2) if _illustration_mode else Vector2(-32, -18)
-	_backdrop.texture = load(illustration_path) if _illustration_mode else load(BACKDROP_PATTERN % clampi(level, 1, 5))
+	_backdrop.texture = load(illustration_path) if _illustration_mode else load("res://assets/production/backgrounds/06_future/layered-preview.png" if level == 6 else BACKDROP_PATTERN % clampi(level, 1, 5))
 	_backdrop.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if _illustration_mode else CanvasItem.TEXTURE_FILTER_NEAREST
 	_backdrop.pivot_offset = _backdrop.size * 0.5
 	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE

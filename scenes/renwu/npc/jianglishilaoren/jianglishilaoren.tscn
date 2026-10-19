@@ -50,17 +50,17 @@ _data = {
 &"ambient": SubResource("Animation_otrhx")
 }
 
-[node name="jianglishilaoren" type="Area2D" unique_id=453420769]
+[node name="jianglishilaoren" type="Area2D" unique_id=805598714]
 script = ExtResource("1_xfvd8")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=1486170033]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=1920575040]
 z_index = 20
 
-[node name="jianglishilaoren_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=216264566]
+[node name="jianglishilaoren_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=505882607]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_jjulq")
 
-[node name="jianglishilaoren_tishi" type="ColorRect" parent="." unique_id=1494693140]
+[node name="jianglishilaoren_tishi" type="ColorRect" parent="." unique_id=369646936]
 z_index = 35
 offset_left = -9.0
 offset_top = -58.0
@@ -68,7 +68,7 @@ offset_right = 9.0
 offset_bottom = -40.0
 color = Color(0.05, 0.08, 0.12, 0.92)
 
-[node name="KeyLabel" type="Label" parent="jianglishilaoren_tishi" unique_id=1941428139]
+[node name="KeyLabel" type="Label" parent="jianglishilaoren_tishi" unique_id=1313458565]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 5.0
@@ -76,6 +76,6 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1, 0.81960785, 0.4, 1)
 text = "E"
 
-[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1220947714]
+[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1217366707]
 libraries/ = SubResource("AnimationLibrary_l7o88")
 autoplay = &"ambient"

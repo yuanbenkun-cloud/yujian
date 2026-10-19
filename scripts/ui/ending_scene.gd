@@ -149,7 +149,7 @@ func _build_credits() -> void:
 	shade.color = Color(0.01, 0.018, 0.03, 0.82)
 	shade.size = VIEW_SIZE
 	_credits.add_child(shade)
-	var title := _label(_credits, "洞  见", Vector2(0, 34), Vector2(640, 46), 31, Color("#f0c46d"))
+	var title := _label(_credits, "渝  见", Vector2(0, 34), Vector2(640, 46), 31, Color("#f0c46d"))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var credits_text := "策划、程序与关卡　　独立游戏制作\n美术协作　　　　　　　生成素材与项目原有素材\n音乐与环境声　　　　　项目原创程序生成\n音效　　　　　　　　　Kenney CC0\n引擎　　　　　　　　　Godot Engine\n\n感谢每一个认真生活、也认真看见别人的人。"
 	var body := _label(_credits, credits_text, Vector2(112, 94), Vector2(416, 150), 13, Color(0.88, 0.89, 0.91))

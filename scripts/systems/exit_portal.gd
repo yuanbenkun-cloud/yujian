@@ -12,12 +12,23 @@ func _on_body_entered(body: Node) -> void:
 	if _used:
 		return
 	if body is CharacterBody2D and body.has_method("set_look_dir"):
+		var cur := get_tree().current_scene
+		var group := cur.find_child("GroupFollower", true, false) if cur != null else null
+		if group != null and group.has_method("all_rescued") and not bool(group.call("all_rescued")):
+			var status := cur.find_child("UI_EscortStatus", true, false) as Label
+			if status != null:
+				status.text = "还有难民留在洞中，不能丢下他们。"
+				status.visible = true
+				status.modulate.a = 1.0
+			var audio := get_node_or_null("/root/AudioManager")
+			if audio != null:
+				audio.call("play_event", "ui_error", 0.92, -1.0)
+			return
 		_used = true
 		body.call("freeze", true)
 		var gs := get_node_or_null("/root/GameState")
 		if gs != null:
 			gs.call("record_insight", "responsibility", true)
-		var cur := get_tree().current_scene
 		var warning := cur.find_child("BombWarning", true, false) if cur != null else null
 		if warning != null and warning.has_method("stop"):
 			warning.call("stop")

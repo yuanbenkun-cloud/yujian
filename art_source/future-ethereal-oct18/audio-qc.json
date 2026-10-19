@@ -1,0 +1,12 @@
+{
+  "title": "星河回响",
+  "duration_seconds": 72,
+  "bpm": 80,
+  "sample_rate": 32000,
+  "channels": 2,
+  "peak": 0.3074941039085388,
+  "rms": 0.06500000039948339,
+  "loop_boundary_delta": 0.008736368268728256,
+  "source": "Original deterministic synthesis; no third-party audio or voice samples",
+  "generator": "tools/build_future_ethereal_audio.py"
+}

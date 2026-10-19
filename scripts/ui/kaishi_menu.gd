@@ -5,6 +5,7 @@ const VIEW_SIZE := Vector2(640, 360)
 const BG_PATH := "res://assets/production/backgrounds/01/layered-preview.png"
 
 var _started := false
+var _default_button: Button
 
 func _ready() -> void:
 	_build_background()
@@ -67,7 +68,7 @@ func _build_title() -> void:
 
 	var title := Label.new()
 	title.name = "Title"
-	title.text = "洞  见"
+	title.text = "渝  见"
 	title.position = Vector2(46, 78)
 	title.size = Vector2(300, 76)
 	title.add_theme_font_size_override("font_size", 58)
@@ -144,9 +145,33 @@ func _build_start_card() -> void:
 	btn.add_theme_stylebox_override("pressed", pressed)
 	btn.pressed.connect(_start)
 	panel.add_child(btn)
+	_default_button = btn
 
 	var gs := get_node_or_null("/root/GameState")
-	if gs != null and bool(gs.call("has_continue")):
+	if gs != null and bool(gs.call("can_enter_future")):
+		var future_btn := Button.new()
+		future_btn.name = "FutureButton"
+		future_btn.text = "第 六 章 · 未 来 重 庆"
+		future_btn.position = Vector2(18, 122)
+		future_btn.size = Vector2(162, 34)
+		future_btn.focus_mode = Control.FOCUS_ALL
+		future_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+		future_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		future_btn.add_theme_font_size_override("font_size", 12)
+		future_btn.add_theme_color_override("font_color", Color("#b9f4ff"))
+		var future_style := StyleBoxFlat.new()
+		future_style.bg_color = Color(0.05, 0.19, 0.25, 0.96)
+		future_style.border_color = Color("#4ed8f2")
+		future_style.set_border_width_all(1)
+		future_style.set_corner_radius_all(4)
+		future_btn.add_theme_stylebox_override("normal", future_style)
+		var future_hover := future_style.duplicate() as StyleBoxFlat
+		future_hover.bg_color = Color(0.08, 0.30, 0.38, 0.98)
+		future_btn.add_theme_stylebox_override("hover", future_hover)
+		future_btn.pressed.connect(_start_future)
+		panel.add_child(future_btn)
+		_default_button = future_btn
+	elif gs != null and bool(gs.call("has_continue")):
 		var continue_btn := Button.new()
 		continue_btn.name = "ContinueButton"
 		continue_btn.text = "继 续 · 第 %d 章" % int(gs.call("get_continue_level"))
@@ -173,7 +198,7 @@ func _build_start_card() -> void:
 	enter_hint.add_theme_font_size_override("font_size", 10)
 	enter_hint.add_theme_color_override("font_color", Color(0.56, 0.63, 0.72))
 	panel.add_child(enter_hint)
-	btn.grab_focus.call_deferred()
+	_default_button.grab_focus.call_deferred()
 
 func _build_controls() -> void:
 	var controls := Label.new()
@@ -211,8 +236,19 @@ func _build_ambient_animation() -> void:
 	player.play("ambient")
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact") or event.is_action_pressed("jump"):
-		_start()
+	if event is InputEventKey and event.echo:
+		return
+	if event.is_action_pressed("interact") or event.is_action_pressed("jump") or event.is_action_pressed("ui_accept"):
+		# E / Space / Enter 都执行当前聚焦按钮。旧逻辑无论焦点在哪都调用
+		# “开始新故事”，导致已解锁的第六章看起来完全按不动。
+		var focused := get_viewport().gui_get_focus_owner() as Button
+		if focused != null and focused.is_visible_in_tree() and not focused.disabled:
+			focused.pressed.emit()
+		elif _default_button != null and not _default_button.disabled:
+			_default_button.pressed.emit()
+		else:
+			_start()
+		get_viewport().set_input_as_handled()
 
 func _start() -> void:
 	if _started:
@@ -279,3 +315,23 @@ func _start_chapter(level: int) -> void:
 	var lm := get_node_or_null("/root/LevelManager")
 	if lm != null:
 		lm.call("start_chapter", level)
+
+func _start_future() -> void:
+	if _started:
+		return
+	var lm := get_node_or_null("/root/LevelManager")
+	if lm == null:
+		return
+	# 只有关卡管理器真正接收（或排队）请求后才锁住菜单。
+	# 旧逻辑先置 _started，遇到上一段转场尚未释放时会永久吞掉点击。
+	var accepted := bool(lm.call("start_future_bonus"))
+	if not accepted:
+		return
+	_started = true
+	var audio := get_node_or_null("/root/AudioManager")
+	if audio != null:
+		audio.call("play_event", "ui_confirm", 1.05, -1.0)
+	var future_button := find_child("FutureButton", true, false) as Button
+	if future_button != null:
+		future_button.text = "正 在 穿 越 …"
+		future_button.disabled = true

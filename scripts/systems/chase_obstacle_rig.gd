@@ -1,7 +1,7 @@
 extends Node2D
 ## 第一关低顶棚：地面可正常通行，但起跳后会撞到棚顶，不能越过关键人流。
 
-const ROOFS := [Vector2(1000, 190), Vector2(1460, 190)]
+const ROOFS := [Vector2(1040, 190), Vector2(1700, 190), Vector2(2380, 190)]
 const ROOF_SIZE := Vector2(126, 24)
 
 func _ready() -> void:

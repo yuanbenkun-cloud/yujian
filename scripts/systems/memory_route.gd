@@ -1,8 +1,8 @@
 extends Node
-## 第五关探索闭环：收集四段“城市记忆”后才解锁最终观景台。
+## 第五关探索闭环：收集六段“城市记忆”后才解锁最终观景台。
 
-const TOTAL := 4
-const NAMES := {"board": "文字", "old_man": "建造者", "flyer": "谋生者", "view": "清晨"}
+const TOTAL := 6
+const NAMES := {"board": "城门", "old_man": "建造者", "wall": "旧墙", "flyer": "谋生者", "view": "两江", "lights": "灯火"}
 var collected: Dictionary = {}
 var _label: Label
 var _hint: Label
@@ -12,6 +12,8 @@ func _ready() -> void:
 	_refresh()
 
 func collect(memory_id: String) -> void:
+	var guide: Node = get_node_or_null("/root/QuestGuide")
+	if guide != null: guide.call("request_refresh")
 	if collected.has(memory_id):
 		return
 	collected[memory_id] = true
@@ -39,7 +41,7 @@ func show_missing() -> void:
 
 func _refresh() -> void:
 	if _label != null:
-		_label.text = "晨光记忆　%s%s　%d/4" % ["●".repeat(collected.size()), "○".repeat(TOTAL - collected.size()), collected.size()]
+		_label.text = "晨光记忆　%s%s　%d/%d" % ["●".repeat(collected.size()), "○".repeat(TOTAL - collected.size()), collected.size(), TOTAL]
 
 func _show_hint(text: String, color: Color) -> void:
 	_hint.text = text

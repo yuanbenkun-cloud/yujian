@@ -1,0 +1,32 @@
+{
+  "translation_only": true,
+  "head_center_x": 64,
+  "feet_y": 125,
+  "frame_shifts": [
+    [
+      -2,
+      0
+    ],
+    [
+      -2,
+      0
+    ],
+    [
+      -2,
+      1
+    ],
+    [
+      -2,
+      0
+    ],
+    [
+      -1,
+      0
+    ],
+    [
+      -2,
+      0
+    ]
+  ],
+  "source_scale_profile": "../character-scale-profile.json"
+}

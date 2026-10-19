@@ -50,17 +50,17 @@ _data = {
 &"ambient": SubResource("Animation_m65p0")
 }
 
-[node name="tanfan" type="Area2D" unique_id=89081461]
+[node name="tanfan" type="Area2D" unique_id=1211684835]
 script = ExtResource("1_cq3xo")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=524752260]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=1947000310]
 z_index = 20
 
-[node name="tanfan_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=1085793556]
+[node name="tanfan_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=132442206]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_xbnvm")
 
-[node name="tanfan_tishi" type="ColorRect" parent="." unique_id=1101403559]
+[node name="tanfan_tishi" type="ColorRect" parent="." unique_id=34524424]
 z_index = 35
 offset_left = -9.0
 offset_top = -58.0
@@ -68,7 +68,7 @@ offset_right = 9.0
 offset_bottom = -40.0
 color = Color(0.05, 0.08, 0.12, 0.92)
 
-[node name="KeyLabel" type="Label" parent="tanfan_tishi" unique_id=1700789364]
+[node name="KeyLabel" type="Label" parent="tanfan_tishi" unique_id=689504380]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 5.0
@@ -76,6 +76,6 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1, 0.81960785, 0.4, 1)
 text = "E"
 
-[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=876249805]
+[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=998447790]
 libraries/ = SubResource("AnimationLibrary_g2wok")
 autoplay = &"ambient"

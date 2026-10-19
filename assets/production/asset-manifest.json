@@ -58,6 +58,26 @@
       "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
     },
     {
+      "id": "npc-crowd-modern-v1",
+      "role": "level 1 moving crowd and modern distant pedestrians",
+      "path": "assets/production/npc/crowd_modern",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "48x64 each", "alpha": true, "anchor": "feet-bottom-center", "frames": 6, "filtering": "linear"},
+      "visual_locks": ["modern Chongqing everyday clothing", "strict side view", "shared baseline", "project pixel-art outline", "six distinct silhouettes"],
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "creator": "OpenAI image generation", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/npc/crowd_modern/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "npc-crowd-wartime-v1",
+      "role": "level 4 air-raid-shelter distant evacuees",
+      "path": "assets/production/npc/crowd_wartime",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "48x64 each", "alpha": true, "anchor": "feet-bottom-center", "frames": 6, "filtering": "linear"},
+      "visual_locks": ["late-1930s/1940s Chongqing civilian costume", "strict side view", "shared baseline", "muted period palette", "six distinct silhouettes"],
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "creator": "OpenAI image generation", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/npc/crowd_wartime/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
       "id": "companion-yudeng-hover-v1",
       "role": "draggable Chongqing guide companion hover loop",
       "path": "assets/production/companion/yudeng/sheet-transparent.png",
@@ -201,6 +221,132 @@
       "status": "approved_in_engine",
       "technical": {"dimensions": "1024x1024 each", "alpha": false, "frames": 5, "filtering": "linear", "surface_world_y": 240},
       "source": {"kind": "derived-from-project-source", "url_or_tool": "tools/normalize_ground_strips.py", "created_at": "2026-09-13", "license": "same as project source media", "prompt_or_source_record": "per-era crop and color profiles in generator"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "ambient-river-boat-v1",
+      "role": "level 3 readable moving river background prop",
+      "path": "assets/production/ambient/river-boat-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "256x128", "alpha": true, "anchor": "center", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/ambient/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "ambient-sky-lantern-v1",
+      "role": "level 1 upward-drifting Chongqing night ambience",
+      "path": "assets/production/ambient/sky-lantern-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "72x96", "alpha": true, "anchor": "center", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/ambient/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "ambient-shelter-rat-v1",
+      "role": "level 4 non-colliding ground rat ambience",
+      "path": "assets/production/ambient/shelter-rat-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "128x64", "alpha": true, "anchor": "center", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/ambient/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "prop-forge-heat-workstation-v1",
+      "role": "level 2 rapid-tap furnace heat workstation",
+      "path": "assets/production/props/forge_stations/heat-workstation-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "256x192", "alpha": true, "anchor": "visible-bottom", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/props/forge_stations/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "prop-forge-quench-workstation-v1",
+      "role": "level 2 hold-and-release quench workstation",
+      "path": "assets/production/props/forge_stations/quench-workstation-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "280x160", "alpha": true, "anchor": "visible-bottom", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/props/forge_stations/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "prop-forge-chisel-wall-v2",
+      "role": "level 2 moving-bar chisel target with cleaned exterior contour",
+      "path": "assets/production/props/forge_stations/chisel-wall-v2.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "180x150", "alpha": true, "anchor": "visible-bottom", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-normalized-and-deterministically-cleaned", "url_or_tool": "Codex built-in image_gen + Godot pixel contour cleanup", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/props/forge_stations/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "prop-memory-old-gate-v1",
+      "role": "level 5 old city gate memory landmark",
+      "path": "assets/production/props/memory_landmarks/old-gate-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "140x170", "alpha": true, "anchor": "visible-bottom", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/props/memory_landmarks/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "prop-memory-city-lights-v1",
+      "role": "level 5 city lights observation landmark",
+      "path": "assets/production/props/memory_landmarks/city-lights-railing-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"dimensions": "220x120", "alpha": true, "anchor": "visible-bottom", "frames": 1, "filtering": "linear"},
+      "source": {"kind": "generated-and-normalized", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-09-29", "license": "project-generated media", "prompt_or_source_record": "assets/production/props/memory_landmarks/prompt-used.txt"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "npc-named-cast-redesign-v1",
+      "role": "eight named NPCs unified with the protagonist's grounded side-view pixel-art style",
+      "path": "assets/production/npc/redesign",
+      "status": "approved_in_engine",
+      "technical": {"characters": 8, "sheet_dimensions": "768x512", "cell_dimensions": "256x256", "alpha": true, "walk_frames": 6, "layout": "3x2", "anchor": "visible-feet", "filtering": "nearest"},
+      "source": {"kind": "generated-and-deterministically-processed", "url_or_tool": "Codex built-in image_gen + generate2dsprite", "created_at": "2026-10-02", "license": "project-generated media", "prompt_or_source_record": "art_source/npc_redesign"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "npc-crowd-walk-cycles-v1",
+      "role": "true walk cycles for level 1 modern crowds and level 4 wartime refugee followers",
+      "path": "assets/production/npc/crowd_walk",
+      "status": "approved_in_engine",
+      "technical": {"characters": 12, "sheet_dimensions": "384x256", "cell_dimensions": "128x128", "alpha": true, "walk_frames": 6, "layout": "3x2", "anchor": "visible-feet", "source_facing": "right", "filtering": "nearest"},
+      "source": {"kind": "reference-guided-generation-and-deterministic-processing", "url_or_tool": "Codex built-in image_gen + generate2dsprite", "created_at": "2026-10-02", "license": "project-generated media", "prompt_or_source_record": "art_source/crowd_walk"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "npc-named-cast-v2",
+      "role": "new unified idle, walk, and neutral dialogue art for all foreground NPCs",
+      "path": "assets/production/npc/cast_v2",
+      "status": "generated_pending_final_playtest",
+      "technical": {"characters": 11, "sheet_dimensions": "768x512", "cell_dimensions": "256x256", "portrait_dimensions": "512x512", "alpha": true, "walk_frames": 6, "layout": "3x2", "anchor": "visible-feet", "filtering": "nearest"},
+      "source": {"kind": "generated-from-new-prompts-and-deterministically-processed", "url_or_tool": "Codex built-in image_gen", "created_at": "2026-10-03", "license": "project-generated media", "prompt_or_source_record": "art_source/npc_cast_v2/prompts-used.md"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": false, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "npc-named-cast-v3-hero-style",
+      "role": "hero-style unified idle, walk, and neutral dialogue art for all foreground NPCs",
+      "path": "assets/production/npc/cast_v3",
+      "status": "approved_in_engine",
+      "technical": {"characters": 11, "sheet_dimensions": "384x256", "cell_dimensions": "128x128", "portrait_dimensions": "384x512", "portrait_revision": "new hero-style half-body illustrations 2026-10-13", "alpha": true, "walk_frames": 6, "layout": "3x2", "visible_body_height": 88, "feet_line_y": 112, "source_facing": "right", "filtering": "nearest"},
+      "source": {"kind": "reference-guided-generation-and-deterministic-processing", "url_or_tool": "Codex built-in image generation + local atlas normalizer", "created_at": "2026-10-13", "license": "project-generated media", "prompt_or_source_record": "art_source/npc_cast_v3/prompts-used.md"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "future-memory-drone-v1",
+      "role": "level 6 chase target carrying the first city-memory shard",
+      "path": "assets/production/future/memory-drone-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"alpha": true, "anchor": "center", "runtime_visible_size": "up to 92x58", "filtering": "nearest"},
+      "source": {"kind": "reference-guided-generation", "url_or_tool": "Codex built-in image_gen", "creator": "OpenAI image generation", "created_at": "2026-10-03", "license": "project-generated media", "prompt_or_source_record": "assets/production/future/prompts-used.md"},
+      "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
+    },
+    {
+      "id": "future-memory-terminal-v1",
+      "role": "level 6 three-phase city-memory calibration terminal",
+      "path": "assets/production/future/memory-terminal-v1.png",
+      "status": "approved_in_engine",
+      "technical": {"alpha": true, "anchor": "bottom-center", "runtime_visible_size": "up to 82x104", "filtering": "nearest"},
+      "source": {"kind": "generated", "url_or_tool": "Codex built-in image_gen", "creator": "OpenAI image generation", "created_at": "2026-10-03", "license": "project-generated media", "prompt_or_source_record": "assets/production/future/prompts-used.md"},
       "verification": {"native_scale_reviewed": true, "in_engine_reviewed": true, "technical_checks_passed": true, "approved_by": "Codex"}
     }
   ]

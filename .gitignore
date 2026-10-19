@@ -19,6 +19,11 @@ Build/
 output/
 tmp/
 
+# Generated NPC source sheets and processing intermediates (runtime sheets are kept under assets/)
+art_source/npc_redesign/
+art_source/crowd_walk/
+art_source/npc_idle/
+
 # Unrelated local study workspace
 air_quality_study/
 
@@ -38,3 +43,11 @@ assets/video/opening-yudeng-history.ogv.uid
 
 # MCP project-local runtime state
 .mcp-runtime/
+
+# Never publish local AI credentials
+yudeng_ai.cfg
+.env
+.env.*
+
+# PPT 构建临时目录（node_modules 等，勿入库）
+.ppt-build/

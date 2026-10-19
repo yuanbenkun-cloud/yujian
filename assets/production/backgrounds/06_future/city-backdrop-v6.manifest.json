@@ -1,0 +1,19 @@
+{
+  "asset_id": "future-city-backdrop-v6",
+  "generated_on": "2026-10-15",
+  "tool": "Codex built-in image generation",
+  "original": "exec-d681d871-2aff-4b4e-b99d-840b4fc7c59e.png",
+  "prompt_file": "city-backdrop-v6.prompt.txt",
+  "reference": "mid.png (camera/material/lighting context only)",
+  "role": "Replacement scenery-only Far layer; no collidable foreground baked in",
+  "stage_canvas": [1280, 720],
+  "display_size": [640, 360],
+  "world_length": 3260,
+  "render_order": -20,
+  "anchor": "top-left, screen-aligned using final canvas transform",
+  "repeat": false,
+  "preserved_layers": ["mid.png", "monorail.png", "monorail-occluder.png", "ground.png"],
+  "geometry": "Existing world-fixed road collision, barriers, actors and interactables remain independent; no collision inferred from new pixels",
+  "normalization": "Resize generated 16:9 art to1280x720 with nearest-neighbor; original preserved",
+  "visual_changes": "Dense contemporary towers with blue glass and amber windows; removed postcard river/mountain panorama; matches station architecture palette"
+}

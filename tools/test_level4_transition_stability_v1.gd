@@ -37,7 +37,7 @@ func _run() -> void:
 			break
 		await process_frame
 	var follower := current_scene.find_child("GroupFollower", true, false) if current_scene != null else null
-	_check(follower != null and bool(follower.get("_enabled")) and (follower.get("followers") as Array).size() == 6, "第三关转入第四关后六名群众开始跟随")
+	_check(follower != null and not bool(follower.get("_enabled")) and (follower.get("followers") as Array).size() == 6 and (follower.get("active_followers") as Array).is_empty(), "第三关转入第四关后仅主角起步，六名难民留在沿途等待救援")
 	_finish()
 
 func _check(condition: bool, message: String) -> void:

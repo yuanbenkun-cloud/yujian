@@ -1,24 +1,30 @@
 extends RefCounted
 ## 第 2 关（磁器口·生存之重）构建（Phase 4）。
 
+const WORLD_LEFT := -700.0
+const WORLD_RIGHT := 3000.0
+const WORLD_WIDTH := WORLD_RIGHT - WORLD_LEFT
+const GROUND_CENTER_X := (WORLD_LEFT + WORLD_RIGHT) * 0.5
+
 func run(_tree: SceneTree) -> bool:
 	var b = load("res://tools/scene_parts/build_common.gd").new()
 	var root: Node2D = b.new_scene("LevelRoot")
+	root.set_meta("camera_right_limit", WORLD_RIGHT)
 
 	# (旧生成背景条已移除，远景=每关主背景)
 	# 地面
 	var ground: StaticBody2D = b.add_node(root, "StaticBody2D", "Ground")
-	ground.position = Vector2(900, 260)
+	ground.position = Vector2(GROUND_CENTER_X, 260)
 	b.bind_script(ground, "res://scripts/background/prop_grounding.gd")
 	var gshape := CollisionShape2D.new()
 	var gr := RectangleShape2D.new()
-	gr.size = Vector2(3200, 40)
+	gr.size = Vector2(WORLD_WIDTH, 40)
 	gshape.shape = gr
 	ground.add_child(gshape)
 	var gvis := ColorRect.new()
 	gvis.color = Color("#5c4433")
-	gvis.size = Vector2(3200, 40)
-	gvis.position = Vector2(-1600, -20)
+	gvis.size = Vector2(WORLD_WIDTH, 40)
+	gvis.position = Vector2(-WORLD_WIDTH * 0.5, -20)
 	ground.add_child(gvis)
 
 	# 主角使用独立 PackedScene；碰撞、相机与动画只维护一份。
@@ -116,9 +122,15 @@ func run(_tree: SceneTree) -> bool:
 		{"dialogue_file": "res://assets/dialogue_level2.json", "dialogue_node": "aming"}
 	)
 
+	# 第一工位：连续鼓风升温。
+	_add_forge_station(root, b, "HeatStation", 0, 1040.0, "鼓风升温", Color("#e8833f"), "res://assets/production/props/forge_stations/heat-workstation-v1.png", 132.0)
+
+	# 第二工位：按住降温、松手淬火。
+	_add_forge_station(root, b, "QuenchStation", 1, 1710.0, "按住淬火", Color("#5ca8c9"), "res://assets/production/props/forge_stations/quench-workstation-v1.png", 108.0)
+
 	# 存档点（岩壁前）
 	var cp: Area2D = b.add_node(root, "Area2D", "Checkpoint")
-	cp.position = Vector2(1100, 215)
+	cp.position = Vector2(1660, 215)
 	b.bind_script(cp, "res://scripts/systems/checkpoint.gd")
 	var cpsh := CollisionShape2D.new()
 	var cprec := RectangleShape2D.new()
@@ -129,7 +141,7 @@ func run(_tree: SceneTree) -> bool:
 
 	# 岩壁：正式交互素材 + 三道裂纹反馈。
 	var wall: Area2D = b.add_node(root, "Area2D", "di_erguan_yanbi")
-	wall.position = Vector2(1250, 250)
+	wall.position = Vector2(2400, 250)
 	b.bind_script(wall, "res://scripts/npc/forge_wall.gd")
 	var wsh2 := CollisionShape2D.new()
 	var wrec2 := RectangleShape2D.new()
@@ -137,12 +149,13 @@ func run(_tree: SceneTree) -> bool:
 	wsh2.shape = wrec2
 	wsh2.position = Vector2(0, -55)
 	wall.add_child(wsh2)
-	var wall_tex: Texture2D = load("res://assets/production/props/gameplay/forge-wall-runtime.png")
+	var wall_tex: Texture2D = load("res://assets/production/props/forge_stations/chisel-wall-v2.png")
 	if wall_tex != null:
 		var wall_vis := Sprite2D.new()
+		b.bind_script(wall_vis, "res://scripts/background/interactive_prop_grounding.gd")
 		wall_vis.name = "WallVisual"
 		wall_vis.texture = wall_tex
-		wall_vis.scale = Vector2.ONE * (130.0 / float(wall_tex.get_height()))
+		wall_vis.scale = Vector2.ONE * (142.0 / float(wall_tex.get_height()))
 		wall_vis.position = Vector2(0, -65)
 		wall.add_child(wall_vis)
 	for i in range(3):
@@ -153,20 +166,6 @@ func run(_tree: SceneTree) -> bool:
 		crack.points = PackedVector2Array([Vector2(-35 + i * 28, -95), Vector2(-22 + i * 25, -70), Vector2(-30 + i * 31, -42), Vector2(-12 + i * 28, -18)])
 		crack.visible = false
 		wall.add_child(crack)
-	var oh := ColorRect.new()
-	oh.name = "OverlayHeat"
-	oh.color = Color(1.0, 0.5, 0.2, 0.35)
-	oh.size = Vector2(114, 106)
-	oh.position = Vector2(-57, -108)
-	oh.visible = false
-	wall.add_child(oh)
-	var oq := ColorRect.new()
-	oq.name = "OverlayQuench"
-	oq.color = Color(0.3, 0.6, 1.0, 0.4)
-	oq.size = Vector2(114, 106)
-	oq.position = Vector2(-57, -108)
-	oq.visible = false
-	wall.add_child(oq)
 	var wprompt2 := ColorRect.new()
 	wprompt2.name = "Prompt"
 	wprompt2.color = Color("#7fd4ff")
@@ -176,7 +175,7 @@ func run(_tree: SceneTree) -> bool:
 
 	# 锻造完成后才开启的关底传送门。
 	var exit_area: Area2D = b.add_node(root, "Area2D", "dierguan_chukou")
-	exit_area.position = Vector2(1400, 215)
+	exit_area.position = Vector2(2670, 215)
 	b.bind_script(exit_area, "res://scripts/systems/locked_exit_portal.gd")
 	var exit_shape := CollisionShape2D.new()
 	var exit_rect := RectangleShape2D.new()
@@ -187,15 +186,15 @@ func run(_tree: SceneTree) -> bool:
 	b.add_goal_portal_visual(exit_area, false)
 
 	# --- Phase 8：背景系统（视差5层 + WorldEnvironment + LightRig）---
-	var pbg = b.make_background(root, [Color("#33140f"), Color("#6b2f1e"), Color("#9d5430"), Color("#c98a4a"), Color("#5c3a22")], "02")
-	b.add_scene_art(pbg, ground, "02")
+	var pbg = b.make_background(root, [Color("#33140f"), Color("#6b2f1e"), Color("#9d5430"), Color("#c98a4a"), Color("#5c3a22")], "02", WORLD_LEFT, WORLD_RIGHT)
+	b.add_scene_art(pbg, ground, "02", WORLD_LEFT, WORLD_RIGHT)
 	b.make_environment(root, Color("#33140f"))
-	b.make_light_rig(root, Color(1.0, 0.8, 0.6), [[1250, 120, "#ff9c5b", 1.2, 90], [700, 60, "#ffb066", 0.5, 50]])
+	b.make_light_rig(root, Color(1.0, 0.8, 0.6), [[1040, 120, "#ff9c5b", 1.2, 90], [1710, 130, "#7fd4ff", 0.52, 70], [2400, 120, "#ffb066", 0.86, 80]])
 
 	# 岩壁实体阻挡（可交互 Area2D 之上再加物理墙体，防穿行/坠落）
 	var wall_body := StaticBody2D.new()
 	wall_body.name = "di_erguan_yanbi_qiangti"
-	wall_body.position = Vector2(1250, 250)
+	wall_body.position = Vector2(2400, 250)
 	var wbs := CollisionShape2D.new()
 	var wbr := RectangleShape2D.new()
 	wbr.size = Vector2(120, 130)
@@ -205,7 +204,7 @@ func run(_tree: SceneTree) -> bool:
 	root.add_child(wall_body)
 
 	# 地图两端边界墙
-	for ew in [[-712, -1], [2512, 1]]:
+	for ew in [[WORLD_LEFT - 12.0, -1], [WORLD_RIGHT + 12.0, 1]]:
 		var ew2 := StaticBody2D.new()
 		ew2.name = "EdgeWall"
 		ew2.position = Vector2(ew[0], 140)
@@ -219,12 +218,51 @@ func run(_tree: SceneTree) -> bool:
 	var gfill := ColorRect.new()
 	gfill.name = "GroundFill"
 	gfill.color = Color("#232a33")
-	gfill.size = Vector2(3200, 130)
-	gfill.position = Vector2(-1600, 0)
+	gfill.size = Vector2(WORLD_WIDTH, 130)
+	gfill.position = Vector2(-WORLD_WIDTH * 0.5, 0)
 	ground.add_child(gfill)
-
-	b.add_object_behind(ground, "res://assets/production/props/kiln/kiln-right-v2.png", 1000.0, 180.0)
 
 	var ok: bool = b.save_scene(root, "res://scenes/guanqia/02_ciqikou.tscn")
 	root.free()
 	return ok
+
+func _add_forge_station(root: Node2D, b: RefCounted, node_name: String, step: int, x: float, title: String, accent: Color, texture_path: String, display_height: float) -> void:
+	var station: Area2D = b.add_node(root, "Area2D", node_name)
+	station.position = Vector2(x, 215)
+	b.bind_script(station, "res://scripts/npc/forge_station.gd")
+	station.set("station_step", step)
+	station.set_meta("gameplay_mode", "rapid_tap" if step == 0 else "hold_release")
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(136, 92)
+	shape.shape = rect
+	shape.position = Vector2(0, -42)
+	station.add_child(shape)
+	var texture: Texture2D = load(texture_path)
+	if texture != null:
+		var sprite := Sprite2D.new()
+		b.bind_script(sprite, "res://scripts/background/interactive_prop_grounding.gd")
+		sprite.name = "StationVisual"
+		sprite.texture = texture
+		sprite.scale = Vector2.ONE * (display_height / float(texture.get_height()))
+		sprite.position = Vector2(0, -display_height * 0.5)
+		sprite.z_index = 18
+		station.add_child(sprite)
+	var label := Label.new()
+	label.name = "StationLabel"
+	label.text = title
+	label.position = Vector2(-60, -display_height - 5.0)
+	label.size = Vector2(120, 18)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 10)
+	label.add_theme_color_override("font_color", Color("#ffe1b8"))
+	label.add_theme_color_override("font_outline_color", Color("#2b1b18"))
+	label.add_theme_constant_override("outline_size", 2)
+	label.z_index = 21
+	station.add_child(label)
+	var prompt := ColorRect.new()
+	prompt.name = "Prompt"
+	prompt.size = Vector2(10, 10)
+	prompt.position = Vector2(-5, -display_height + 17.0)
+	prompt.color = accent
+	station.add_child(prompt)

@@ -31,6 +31,8 @@ func is_interaction_available() -> bool:
 	return _interaction_enabled
 
 func disable_interaction() -> void:
+	var guide: Node = get_node_or_null("/root/QuestGuide")
+	if guide != null: guide.call("request_refresh")
 	_interaction_enabled = false
 	set_prompt_visible(false)
 	var scene := get_tree().current_scene

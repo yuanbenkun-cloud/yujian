@@ -19,7 +19,8 @@
     {"id": "02", "name": "ancient Ciqikou kiln dusk", "folder": "assets/production/backgrounds/02", "prompt": "assets/production/backgrounds/02/prompts-used.md", "status": "approved_in_engine"},
     {"id": "03", "name": "ancient Zhongshan rain", "folder": "assets/production/backgrounds/03", "prompt": "assets/production/backgrounds/03/prompts-used.md", "status": "approved_in_engine"},
     {"id": "04", "name": "wartime air-raid shelter", "folder": "assets/production/backgrounds/04", "prompt": "assets/production/backgrounds/04/prompts-used.md", "status": "approved_in_engine"},
-    {"id": "05", "name": "Hongyadong return dawn", "folder": "assets/production/backgrounds/05", "prompt": "assets/production/backgrounds/05/prompts-used.md", "status": "approved_in_engine"}
+    {"id": "05", "name": "Hongyadong return dawn", "folder": "assets/production/backgrounds/05", "prompt": "assets/production/backgrounds/05/prompts-used.md", "status": "approved_in_engine"},
+    {"id": "06_future", "name": "future cyberpunk Chongqing blue hour", "folder": "assets/production/backgrounds/06_future", "prompt": "assets/production/backgrounds/06_future/prompts-used.md", "status": "approved_in_engine"}
   ],
   "verification": {
     "dimensions_checked": true,

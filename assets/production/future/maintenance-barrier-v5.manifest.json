@@ -1,0 +1,11 @@
+{
+  "asset_id": "future-maintenance-barrier-v5",
+  "path": "res://assets/production/future/maintenance-barrier-v5.png",
+  "generated_on": "2026-10-15",
+  "tool": "Codex built-in image generation",
+  "original": "C:/Users/Administrator/.codex/generated_images/01a089e5-7618-7173-ba4a-b8135a10f95d/exec-6a618c31-bc47-403f-a07c-eef8c861ad41.png",
+  "prompt_summary": "A single grounded steel maintenance barricade for futuristic Chongqing, orthographic side-scroller pixel art, slate-blue metal, broad black/amber diagonal warning stripes, bolt-down feet, restrained cyan/amber lights, transparent background, no lettering or scenery.",
+  "normalization": "Remove alpha below 0.4, crop visible bounds, nearest-neighbor resize to 192x96; original preserved.",
+  "collision": "Existing static rectangles preserved; sprite feet aligned to y=288 with contact shadow and anchored base.",
+  "validation": "Alpha verified; imported into Godot; native 640x360 gameplay capture and real jump/interaction regression passed."
+}

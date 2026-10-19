@@ -11,8 +11,8 @@ var frozen: bool = false
 var look_dir: int = 1
 var nearby: Array[Area2D] = []
 var _hit_stun: float = 0.0
-var _step_time := 0.0
 var _interaction_hint: PanelContainer = null
+var _interaction_hint_time: float = 0.0
 
 @onready var _animator: Node = get_node_or_null("PlayerAnimator")
 @onready var _zone: Area2D = (
@@ -28,6 +28,10 @@ func _ready() -> void:
 		_zone.area_exited.connect(_on_zone_exited)
 
 func _physics_process(delta: float) -> void:
+	_interaction_hint_time = maxf(0.0, _interaction_hint_time - delta)
+	if is_instance_valid(_interaction_hint):
+		_interaction_hint.visible = _interaction_hint_time > 0.0 and not frozen
+		_interaction_hint.modulate.a = minf(1.0, _interaction_hint_time / 0.4)
 	if frozen:
 		velocity = Vector2.ZERO
 		return
@@ -41,13 +45,6 @@ func _physics_process(delta: float) -> void:
 	if dir != 0.0:
 		set_look_dir(1 if dir > 0 else -1)
 	velocity.x = dir * move_speed
-	if dir != 0.0 and is_on_floor():
-		_step_time -= delta
-		if _step_time <= 0.0:
-			_step_time = 0.34
-			_play_audio("step", randf_range(0.92, 1.08), -8.0)
-	else:
-		_step_time = 0.0
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -112,6 +109,7 @@ func _try_interact() -> bool:
 			nearby.erase(a)
 			continue
 		if a.has_method("on_interact"):
+			_interaction_hint_time = 0.0
 			if _interaction_hint != null:
 				_interaction_hint.visible = false
 			_play_audio("ui_confirm", 1.0, -5.0)
@@ -123,7 +121,7 @@ func _try_interact() -> bool:
 	return false
 
 func _build_interaction_hint() -> void:
-	var scene := get_tree().current_scene
+	var scene := get_parent()
 	if scene == null:
 		return
 	var ui := scene.find_child("UI_Base", true, false)
@@ -135,8 +133,12 @@ func _build_interaction_hint() -> void:
 		return
 	_interaction_hint = PanelContainer.new()
 	_interaction_hint.name = "InteractionHint"
-	_interaction_hint.position = Vector2(248, 319)
-	_interaction_hint.size = Vector2(144, 29)
+	_interaction_hint.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_interaction_hint.offset_left = -72
+	_interaction_hint.offset_right = 72
+	_interaction_hint.offset_top = -41
+	_interaction_hint.offset_bottom = -12
+	_interaction_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var box := StyleBoxFlat.new()
 	box.bg_color = Color(0.025, 0.035, 0.06, 0.92)
 	box.border_color = Color("#d5a65d")
@@ -146,6 +148,7 @@ func _build_interaction_hint() -> void:
 	box.shadow_size = 3
 	_interaction_hint.add_theme_stylebox_override("panel", box)
 	var label := Label.new()
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = "E  互动"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -162,4 +165,5 @@ func _refresh_interaction_hint() -> void:
 			if is_instance_valid(area) and (not area.has_method("is_interaction_available") or bool(area.call("is_interaction_available"))):
 				available = true
 				break
-		_interaction_hint.visible = available
+		_interaction_hint_time = 3.5 if available else 0.0
+		_interaction_hint.visible = available and not frozen

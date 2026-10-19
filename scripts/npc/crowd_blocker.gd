@@ -3,12 +3,19 @@ extends AnimatableBody2D
 
 enum State { STROLL, WARN, INTERCEPT, HOLD, LEAVE, PASSED }
 
-const CROWD_FPS := 2.5
 const PEOPLE := [
-	{"file": "res://assets/npc_anim/tourist.png", "fw": 520, "fh": 484, "count": 6, "height": 53.0},
-	{"file": "res://assets/npc_anim/aming.png", "fw": 198, "fh": 437, "count": 8, "height": 57.0},
-	{"file": "res://assets/npc_anim/helper.png", "fw": 216, "fh": 475, "count": 8, "height": 55.0},
+	"res://assets/production/npc/crowd_walk/modern/modern-01.png",
+	"res://assets/production/npc/crowd_walk/modern/modern-02.png",
+	"res://assets/production/npc/crowd_walk/modern/modern-03.png",
+	"res://assets/production/npc/crowd_walk/modern/modern-04.png",
+	"res://assets/production/npc/crowd_walk/modern/modern-05.png",
+	"res://assets/production/npc/crowd_walk/modern/modern-06.png",
 ]
+const WALK_FRAME_SIZE := 128
+const WALK_FRAME_COUNT := 6
+const WALK_COLUMNS := 3
+const CROWD_VISIBLE_HEIGHT := 70.0
+const STREET_SURFACE_Y := 246.0
 
 @export var trigger_distance := 190.0
 @export var warning_time := 0.48
@@ -27,9 +34,13 @@ var _timer := 0.0
 var _phase := 0.0
 var _warning: Label
 var _visuals: Array[AnimatedSprite2D] = []
+var _visual_base_y: Array[float] = []
+var _last_motion_x := 0.0
+var _walk_grace := 0.0
 
 func _ready() -> void:
 	_origin_x = position.x
+	_last_motion_x = position.x
 	_phase = float(_crowd_index()) * 1.37
 	var cur := get_tree().current_scene
 	if cur == null:
@@ -43,6 +54,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(_player):
 		return
+	var frame_start_x := position.x
 	match _state:
 		State.STROLL:
 			_phase += delta * stroll_speed
@@ -80,40 +92,90 @@ func _physics_process(delta: float) -> void:
 			var previous_x := position.x
 			position.x = _origin_x - intercept_distance - 54.0 + sin(_phase) * 14.0
 			_update_facing(1 if position.x > previous_x else -1)
+	# AnimatableBody2D 的 sync_to_physics 会延迟应用位置；同帧写入后读取
+	# 得到的仍可能是旧位置，原来的检测因此一直把移动角色切回 idle。
+	# 比较两个物理帧的已提交位置，并给转向留一点连续步态时间。
+	if absf(frame_start_x - _last_motion_x) > 0.004:
+		_walk_grace = 0.18
+	else:
+		_walk_grace = maxf(0.0, _walk_grace - delta)
+	_last_motion_x = frame_start_x
+	_set_walking(_walk_grace > 0.0)
 
 func _build_crowd_model() -> void:
 	for child in get_children():
 		if child is Sprite2D:
 			(child as Sprite2D).visible = false
-	var offsets := [-46.0, -23.0, 0.0, 23.0, 46.0]
+	var offsets := [-50.0, -25.0, 0.0, 25.0, 50.0]
 	var seed := _crowd_index()
+	# 每股人群的根节点会随碰撞高度而变化，不能使用固定的局部脚线。
+	# 直接反算洪崖洞街面的世界坐标，保证所有人的鞋底都落在 y=240。
+	var local_foot_y := STREET_SURFACE_Y - global_position.y
 	for i in range(5):
-		var spec: Dictionary = PEOPLE[(seed + i) % PEOPLE.size()]
-		var sheet: Texture2D = load(str(spec["file"]))
-		if sheet == null:
+		var texture: Texture2D = load(PEOPLE[(seed + i) % PEOPLE.size()])
+		if texture == null:
 			continue
-		var frames := SpriteFrames.new()
-		frames.add_animation("walk")
-		frames.set_animation_speed("walk", CROWD_FPS)
-		frames.set_animation_loop("walk", true)
-		for frame_index in range(int(spec["count"])):
-			var atlas := AtlasTexture.new()
-			atlas.atlas = sheet
-			atlas.region = Rect2(float(frame_index * int(spec["fw"])), 0.0, float(spec["fw"]), float(spec["fh"]))
-			frames.add_frame("walk", atlas)
 		var actor := AnimatedSprite2D.new()
 		actor.name = "CrowdActor%d" % (i + 1)
-		actor.sprite_frames = frames
-		actor.centered = false
+		actor.sprite_frames = _make_walk_frames(texture)
+		actor.centered = true
 		actor.z_index = 20 + i
-		var scale_factor := float(spec["height"]) / float(spec["fh"])
-		actor.scale = Vector2.ONE * scale_factor
-		actor.position = Vector2(offsets[i] - float(spec["fw"]) * scale_factor * 0.5, 25.0 - float(spec["fh"]) * scale_factor)
-		actor.frame = (seed + i * 2) % int(spec["count"])
-		actor.play("walk")
+		actor.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var visible_height := _visible_height(texture)
+		var bottom_padding := _bottom_padding(texture)
+		var display_scale := CROWD_VISIBLE_HEIGHT / float(maxi(visible_height, 1))
+		actor.scale = Vector2.ONE * display_scale
+		actor.position = Vector2(offsets[i], local_foot_y - (float(WALK_FRAME_SIZE) * 0.5 - float(bottom_padding)) * display_scale)
+		actor.set_meta("visible_height_world", CROWD_VISIBLE_HEIGHT)
+		actor.set_meta("local_visible_bottom_y", local_foot_y)
+		actor.set_meta("grounded_visible_bottom_y", STREET_SURFACE_Y)
 		add_child(actor)
+		actor.play("walk")
 		_visuals.append(actor)
-		_add_shadow(Vector2(offsets[i], 24.0), i)
+		_visual_base_y.append(actor.position.y)
+		_add_shadow(Vector2(offsets[i], local_foot_y), i)
+
+func _make_walk_frames(texture: Texture2D) -> SpriteFrames:
+	var frames := SpriteFrames.new()
+	frames.add_animation("idle")
+	frames.set_animation_speed("idle", 2.0)
+	frames.set_animation_loop("idle", true)
+	frames.add_animation("walk")
+	frames.set_animation_speed("walk", 4.5)
+	frames.set_animation_loop("walk", true)
+	for i in range(WALK_FRAME_COUNT):
+		var frame := AtlasTexture.new()
+		frame.atlas = texture
+		frame.region = Rect2(float(i % WALK_COLUMNS) * WALK_FRAME_SIZE, float(i / WALK_COLUMNS) * WALK_FRAME_SIZE, WALK_FRAME_SIZE, WALK_FRAME_SIZE)
+		frames.add_frame("walk", frame)
+		if i == 0:
+			frames.add_frame("idle", frame)
+	return frames
+
+func _set_walking(moving: bool) -> void:
+	var animation := &"walk" if moving else &"idle"
+	for actor in _visuals:
+		if actor.animation != animation:
+			actor.play(animation)
+
+func _visible_height(texture: Texture2D) -> int:
+	var image := texture.get_image()
+	var top := WALK_FRAME_SIZE
+	var bottom := -1
+	for y in range(WALK_FRAME_SIZE):
+		for x in range(WALK_FRAME_SIZE):
+			if image.get_pixel(x, y).a >= 0.12:
+				top = mini(top, y)
+				bottom = maxi(bottom, y)
+	return WALK_FRAME_SIZE if bottom < top else bottom - top + 1
+
+func _bottom_padding(texture: Texture2D) -> int:
+	var image := texture.get_image()
+	for y in range(WALK_FRAME_SIZE - 1, -1, -1):
+		for x in range(WALK_FRAME_SIZE):
+			if image.get_pixel(x, y).a >= 0.12:
+				return WALK_FRAME_SIZE - 1 - y
+	return 0
 
 func _build_warning() -> void:
 	_warning = Label.new()
@@ -144,8 +206,9 @@ func _add_shadow(at: Vector2, index: int) -> void:
 	add_child(shadow)
 
 func _update_facing(direction: int) -> void:
-	for i in range(_visuals.size()):
-		_visuals[i].flip_h = direction > 0 if i != 1 else direction < 0
+	for actor in _visuals:
+		# 新帧表原始朝右，向左时才翻转。
+		actor.flip_h = direction < 0
 
 func _crowd_index() -> int:
 	var suffix := str(name).get_slice("_", str(name).count("_"))

@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "references": ["assets/portraits/chenmo.png", "assets/production/future/intro-comic-v1/atlas.png"],
+  "assets": [
+    {"id": "archive", "path": "archive.png", "date": "2026-10-15", "source": "C:/Users/Administrator/.codex/generated_images/01a089e5-7618-7173-ba4a-b8135a10f95d/exec-a3470238-bec1-4d4c-8341-753a9317d888.png"},
+    {"id": "overwrite", "path": "overwrite.png", "date": "2026-10-15", "source": "C:/Users/Administrator/.codex/generated_images/01a089e5-7618-7173-ba4a-b8135a10f95d/exec-2f851328-592f-4490-a8e0-bd6a44a10961.png"},
+    {"id": "living", "path": "living.png", "date": "2026-10-16", "source": "C:/Users/Administrator/.codex/generated_images/01a089e5-7618-7173-ba4a-b8135a10f95d/exec-93d93118-84dd-4a72-9ccd-13e8b0fb22c8.png"}
+  ],
+  "processing": "Copied without recompression; rendered above memory screen effects; engine-native titles and captions."
+}

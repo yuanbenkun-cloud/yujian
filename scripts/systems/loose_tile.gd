@@ -15,6 +15,8 @@ func _on_body_entered(body: Node) -> void:
 		return
 	if body is CharacterBody2D and body.has_method("set_look_dir"):
 		_triggered = true
+		var guide: Node = get_node_or_null("/root/QuestGuide")
+		if guide != null: guide.call("request_refresh")
 		set_deferred("monitoring", false)
 		var scene := get_tree().current_scene
 		var cm := scene.find_child("ChaseManager", true, false) if scene != null else null

@@ -32,6 +32,11 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("ui_cancel"):
+		var chat: Node = get_node_or_null("/root/YudengChat")
+		if chat != null and bool(chat.get("is_open")):
+			chat.call("close_chat")
+			get_viewport().set_input_as_handled()
+			return
 		_toggle_menu()
 		get_viewport().set_input_as_handled()
 

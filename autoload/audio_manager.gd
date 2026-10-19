@@ -24,6 +24,7 @@ const SCENE_AUDIO := {
 	"res://scenes/guanqia/03_zhongshan.tscn": ["res://assets/audio/user_music/第3关-古镇.ogg", "res://assets/audio/user_ambience/第3关-河流.ogg"],
 	"res://scenes/guanqia/04_fangdong.tscn": ["res://assets/audio/user_music/第4关-防空洞.ogg", "res://assets/audio/user_ambience/第4关-洞内环境.ogg"],
 	"res://scenes/guanqia/05_hongyadong_return.tscn": ["res://assets/audio/user_music/第5关-归来.ogg", "res://assets/audio/user_ambience/第1关-江岸汽笛.ogg"],
+	"res://scenes/guanqia/06_future_chongqing.tscn": ["res://assets/audio/future/第6关-星河回响-用户版.wav", ""],
 	"res://scenes/jieju.tscn": ["res://assets/audio/user_music/结尾-新配乐.ogg", "res://assets/audio/user_ambience/第1关-江岸汽笛.ogg"],
 }
 const STORY_AMBIENCE := {
@@ -42,6 +43,7 @@ const SCENE_MUSIC_DB := {
 	"res://scenes/guanqia/03_zhongshan.tscn": -4.0,
 	"res://scenes/guanqia/04_fangdong.tscn": -1.0,
 	"res://scenes/guanqia/05_hongyadong_return.tscn": 4.0,
+	"res://scenes/guanqia/06_future_chongqing.tscn": -2.0,
 	"res://scenes/jieju.tscn": 0.0,
 }
 const SCENE_AMBIENT_DB := {
@@ -51,6 +53,7 @@ const SCENE_AMBIENT_DB := {
 	"res://scenes/guanqia/03_zhongshan.tscn": 5.0,
 	"res://scenes/guanqia/04_fangdong.tscn": 1.0,
 	"res://scenes/guanqia/05_hongyadong_return.tscn": 2.0,
+	"res://scenes/guanqia/06_future_chongqing.tscn": 0.0,
 	"res://scenes/jieju.tscn": 0.0,
 }
 const SCENE_LAYERS := {

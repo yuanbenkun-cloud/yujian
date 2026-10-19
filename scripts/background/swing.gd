@@ -11,7 +11,7 @@ var _t: float = 0.0
 var _light: PointLight2D = null
 
 func _ready() -> void:
-	if light_path != "" and has_node(light_path):
+	if not light_path.is_empty() and has_node(light_path):
 		_light = get_node(light_path) as PointLight2D
 
 func _process(delta: float) -> void:

@@ -50,17 +50,17 @@ _data = {
 &"ambient": SubResource("Animation_4o0no")
 }
 
-[node name="youke" type="Area2D" unique_id=161363542]
+[node name="youke" type="Area2D" unique_id=1711546952]
 script = ExtResource("1_x0fqy")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=1011890935]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=1131400391]
 z_index = 20
 
-[node name="youke_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=1601047848]
+[node name="youke_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=576643048]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_aj5v4")
 
-[node name="youke_tishi" type="ColorRect" parent="." unique_id=113145844]
+[node name="youke_tishi" type="ColorRect" parent="." unique_id=257239340]
 z_index = 35
 offset_left = -9.0
 offset_top = -58.0
@@ -68,7 +68,7 @@ offset_right = 9.0
 offset_bottom = -40.0
 color = Color(0.05, 0.08, 0.12, 0.92)
 
-[node name="KeyLabel" type="Label" parent="youke_tishi" unique_id=365973657]
+[node name="KeyLabel" type="Label" parent="youke_tishi" unique_id=859670241]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 5.0
@@ -76,6 +76,6 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1, 0.81960785, 0.4, 1)
 text = "E"
 
-[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1934673213]
+[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=774595172]
 libraries/ = SubResource("AnimationLibrary_s4jd7")
 autoplay = &"ambient"

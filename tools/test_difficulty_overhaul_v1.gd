@@ -53,11 +53,13 @@ func _run() -> void:
 	_check(portal2 != null and not bool(portal2.get("_active")), "第二关：锻造前传送门关闭")
 	portal2.call("activate")
 	_check(bool(portal2.get("_active")) and current_scene.find_child("GoalPortalVisual", true, false).visible, "第二关：锻造完成后可开启传送门")
-	var speeds: Array = forge.get_script().get_script_constant_map().get("CURSOR_SPEEDS", [])
-	_check(speeds.size() == 3 and float(speeds[0]) >= 1.0 and float(speeds[2]) >= 1.6, "第二关：三种移动条全部加速")
-	forge.set("current_step", 0)
+	var forge_constants: Dictionary = forge.get_script().get_script_constant_map()
+	_check(float(forge_constants.get("HEAT_DECAY_BASE", 0.0)) >= 0.19 and float(forge_constants.get("HEAT_DECAY_BASE", 1.0)) <= 0.22 and float(forge_constants.get("HEAT_TAP_GAIN", 0.0)) >= 0.115, "第二关：炉温仍会回退，但连续鼓风容错适度提高")
+	forge.set("current_step", 2)
 	forge.set("current_round", 2)
-	_check(float(forge.call("_current_speed")) >= 1.35, "第二关：后续轮次继续叠加速度压力")
+	_check(float(forge.call("_current_speed")) >= 2.2 and float(forge.call("_current_speed")) <= 2.3, "第二关：凿击后续轮次保留压力但不再过快")
+	_check(float(forge.call("_current_width")) >= 0.12, "第二关：后续轮次判定区不再收缩过度")
+	_check(float(forge_constants.get("MISS_TIME_PENALTY", 0.0)) == 5.0, "第二关：单次失误扣时由七秒降至五秒")
 
 	await _load_scene("res://scenes/guanqia/04_fangdong.tscn")
 	var bombs := current_scene.find_child("BombWarning", true, false)
@@ -83,7 +85,7 @@ func _run() -> void:
 	_check(final_aunt.modulate.a == 1.0 and aunt_visual != null and aunt_visual.modulate.a == 1.0 and aunt_visual.self_modulate.a == 1.0, "第五关：传单阿姨节点与立绘均保持完全不透明")
 	var aunt_anim := aunt_visual as AnimatedSprite2D
 	var aunt_texture := aunt_anim.sprite_frames.get_frame_texture(&"idle", 0) if aunt_anim != null else null
-	_check(aunt_texture != null and _texture_source_path(aunt_texture).ends_with("flyer-lady-return-idle-v2.png") and aunt_visual.material == null, "第五关：阿姨换用与原设一致的新实色立绘")
+	_check(aunt_texture != null and _texture_source_path(aunt_texture).ends_with("npc/redesign/flyer_lady/idle-transparent.png") and aunt_visual.material == null, "第五关：阿姨换用与原设一致的新实色待机立绘")
 	var dialogue_panel := current_scene.find_child("DialoguePanel", true, false) as Control
 	dialogue_panel.call("play_line", "传单阿姨", "测试")
 	dialogue_panel.call("reset_portraits")

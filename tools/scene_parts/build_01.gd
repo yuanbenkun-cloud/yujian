@@ -1,28 +1,34 @@
 extends RefCounted
 ## 第 1 关（洪崖洞·迷途）v3：单一追兵 + 会预警/退场的动态人群路障。
 
+const WORLD_LEFT := -700.0
+const WORLD_RIGHT := 3650.0
+const WORLD_WIDTH := WORLD_RIGHT - WORLD_LEFT
+const GROUND_CENTER_X := (WORLD_LEFT + WORLD_RIGHT) * 0.5
+
 func run(_tree: SceneTree) -> bool:
 	var b = load("res://tools/scene_parts/build_common.gd").new()
 	var root: Node2D = b.new_scene("LevelRoot")
+	root.set_meta("camera_right_limit", WORLD_RIGHT)
 
 	# (旧生成背景条已移除，远景=每关主背景)
-	# 地面（-600..2000，宽 2600）
+	# 加长后的完整追逐街段。
 	var ground: StaticBody2D = b.add_node(root, "StaticBody2D", "Ground")
-	ground.position = Vector2(900, 260)
+	ground.position = Vector2(GROUND_CENTER_X, 260)
 	b.bind_script(ground, "res://scripts/background/prop_grounding.gd")
 	var gsh := CollisionShape2D.new()
 	var grec := RectangleShape2D.new()
-	grec.size = Vector2(3200, 40)
+	grec.size = Vector2(WORLD_WIDTH, 40)
 	gsh.shape = grec
 	ground.add_child(gsh)
 	var gv := ColorRect.new()
 	gv.color = Color("#39424e")
-	gv.size = Vector2(3200, 40)
-	gv.position = Vector2(-1600, -20)
+	gv.size = Vector2(WORLD_WIDTH, 40)
+	gv.position = Vector2(-WORLD_WIDTH * 0.5, -20)
 	ground.add_child(gv)
 
 	# 地图两端边界墙（防坠出地图）
-	for ew in [[-712, -1], [2512, 1]]:
+	for ew in [[WORLD_LEFT - 12.0, -1], [WORLD_RIGHT + 12.0, 1]]:
 		var eb := StaticBody2D.new()
 		eb.name = "EdgeWall"
 		eb.position = Vector2(ew[0], 140)
@@ -37,6 +43,9 @@ func run(_tree: SceneTree) -> bool:
 	var player: CharacterBody2D = b.instantiate_scene(
 		root, "res://scenes/renwu/zhujue/zhujue.tscn", "zhujue", Vector2(-620, 200)
 	) as CharacterBody2D
+	var camera := player.get_node_or_null("zhujue_shexiangji") as Camera2D
+	if camera != null:
+		camera.limit_right = int(WORLD_RIGHT)
 
 	# HeartSystem + UI
 	var heart: Node = b.add_node(root, "Node", "HeartSystem")
@@ -104,14 +113,30 @@ func run(_tree: SceneTree) -> bool:
 	start_shape.shape = start_rect
 	chase_start.add_child(start_shape)
 
-	# 动态路人：持续横向走动，靠近时预警并逆向切入；2、4 组位于低顶棚下，无法直接跳过。
-	b.make_crowd(root, 1, 780, 84, 50)
-	b.make_crowd(root, 2, 1000, 64, 46)
-	b.make_crowd(root, 3, 1220, 92, 52)
-	b.make_crowd(root, 4, 1460, 72, 46)
+	# 七组专用现代路人形成“疏—密—疏”的追逐节奏；2、4、6 组位于低顶棚下。
+	b.make_crowd(root, 1, 720, 88, 52)
+	b.make_crowd(root, 2, 1040, 72, 48)
+	b.make_crowd(root, 3, 1370, 96, 54)
+	b.make_crowd(root, 4, 1700, 76, 49)
+	b.make_crowd(root, 5, 2040, 92, 53)
+	b.make_crowd(root, 6, 2380, 74, 48)
+	b.make_crowd(root, 7, 2720, 90, 52)
+	for obstacle_data in [[1, 870.0], [2, 1530.0], [3, 2200.0], [4, 2870.0]]:
+		_add_street_obstacle(root, int(obstacle_data[0]), float(obstacle_data[1]))
+
+	# 加长后增加中段存档点，失败重来仍保留完整后半程压力。
+	var cp_mid: Area2D = b.add_node(root, "Area2D", "CheckpointMid")
+	cp_mid.position = Vector2(1870, 215)
+	b.bind_script(cp_mid, "res://scripts/systems/checkpoint.gd")
+	var cp_mid_shape := CollisionShape2D.new()
+	var cp_mid_rect := RectangleShape2D.new()
+	cp_mid_rect.size = Vector2(30, 60)
+	cp_mid_shape.shape = cp_mid_rect
+	cp_mid_shape.position = Vector2(0, -30)
+	cp_mid.add_child(cp_mid_shape)
 
 	# 装饰灯笼
-	for lp in [[600, 96], [1750, 96]]:
+	for lp in [[600, 96], [1500, 96], [2460, 96], [3060, 96]]:
 		var ltex: Texture2D = load("res://assets/generated/obj_lantern.png")
 		if ltex != null:
 			var lsp := Sprite2D.new()
@@ -123,7 +148,7 @@ func run(_tree: SceneTree) -> bool:
 
 	# 历史木牌（对话，信息节点 info_board）
 	var board: Area2D = b.add_node(root, "Area2D", "diyiguan_mupai")
-	board.position = Vector2(1820, 210)
+	board.position = Vector2(3010, 210)
 	b.bind_script(board, "res://scripts/npc/npc_base.gd")
 	var bsh := CollisionShape2D.new()
 	var brect := RectangleShape2D.new()
@@ -153,7 +178,7 @@ func run(_tree: SceneTree) -> bool:
 
 	# 第一关终点：先踩下古墙石扣，再走进显现的时空门。
 	var tile: Area2D = b.add_node(root, "Area2D", "diyiguan_husongdizhuan")
-	tile.position = Vector2(1930, 240)
+	tile.position = Vector2(3180, 240)
 	b.bind_script(tile, "res://scripts/systems/loose_tile.gd")
 	tile.set("portal_path", NodePath("../FirstExitPortal"))
 	var tsh := CollisionShape2D.new()
@@ -171,7 +196,7 @@ func run(_tree: SceneTree) -> bool:
 		tile_visual.z_index = 16
 		tile.add_child(tile_visual)
 	var portal: Area2D = b.add_node(root, "Area2D", "FirstExitPortal")
-	portal.position = Vector2(2035, 240)
+	portal.position = Vector2(3300, 240)
 	b.bind_script(portal, "res://scripts/systems/locked_exit_portal.gd")
 	portal.set("starts_active", false)
 	var portal_shape := CollisionShape2D.new()
@@ -183,21 +208,52 @@ func run(_tree: SceneTree) -> bool:
 	b.add_goal_portal_visual(portal, false)
 
 	# 背景系统
-	var pbg = b.make_background(root, [Color("#0a0f22"), Color("#14204a"), Color("#3a4f8f"), Color("#6b4a6b"), Color("#23273f")], "01")
-	b.add_scene_art(pbg, ground, "01")
+	var pbg = b.make_background(root, [Color("#0a0f22"), Color("#14204a"), Color("#3a4f8f"), Color("#6b4a6b"), Color("#23273f")], "01", WORLD_LEFT, WORLD_RIGHT)
+	b.add_scene_art(pbg, ground, "01", WORLD_LEFT, WORLD_RIGHT)
 	b.make_environment(root, Color("#0a0f22"))
-	b.make_light_rig(root, Color(1.0, 0.9, 0.75), [[540, 70, "#ff8fb3", 0.9, 60], [1000, 60, "#7fd4ff", 0.7, 60], [1600, 80, "#ffd166", 0.6, 40]])
+	b.make_light_rig(root, Color(1.0, 0.9, 0.75), [[540, 70, "#ff8fb3", 0.9, 60], [1120, 60, "#7fd4ff", 0.7, 60], [1780, 80, "#ffd166", 0.6, 40], [2500, 72, "#ff8fb3", 0.72, 52], [3160, 68, "#ffd166", 0.62, 46]])
 
 	# 地面向下填充（640x360 视口底部不露空）
 	var gfill := ColorRect.new()
 	gfill.name = "GroundFill"
 	gfill.color = Color("#232a33")
-	gfill.size = Vector2(3200, 130)
-	gfill.position = Vector2(-1600, 0)
+	gfill.size = Vector2(WORLD_WIDTH, 130)
+	gfill.position = Vector2(-WORLD_WIDTH * 0.5, 0)
 	ground.add_child(gfill)
 
-	b.add_object_behind(ground, "res://assets/objects/stilt.png", 2050.0, 210.0)
+	b.add_object_behind(ground, "res://assets/objects/stilt.png", 3370.0, 210.0)
 
 	var ok: bool = b.save_scene(root, "res://scenes/guanqia/01_hongyadong.tscn")
 	root.free()
 	return ok
+
+func _add_street_obstacle(root: Node2D, obstacle_id: int, x: float) -> void:
+	var barrier := StaticBody2D.new()
+	barrier.name = "StreetObstacle%d" % obstacle_id
+	barrier.position = Vector2(x, 228)
+	barrier.z_index = 23
+	barrier.set_meta("jumpable", true)
+	root.add_child(barrier)
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(38, 24)
+	shape.shape = rect
+	barrier.add_child(shape)
+	var board := Polygon2D.new()
+	board.name = "BarrierBoard"
+	board.polygon = PackedVector2Array([Vector2(-22, -10), Vector2(21, -10), Vector2(18, 1), Vector2(-19, 1)])
+	board.color = Color("#d58a3f")
+	barrier.add_child(board)
+	for stripe in range(3):
+		var mark := Polygon2D.new()
+		mark.name = "ReflectiveStripe%d" % stripe
+		var sx := -15.0 + float(stripe) * 14.0
+		mark.polygon = PackedVector2Array([Vector2(sx, -9), Vector2(sx + 5, -9), Vector2(sx + 1, 0), Vector2(sx - 4, 0)])
+		mark.color = Color("#f5d995")
+		barrier.add_child(mark)
+	for leg_x in [-14.0, 14.0]:
+		var leg := ColorRect.new()
+		leg.color = Color("#514148")
+		leg.position = Vector2(leg_x - 2.0, 1.0)
+		leg.size = Vector2(4, 11)
+		barrier.add_child(leg)

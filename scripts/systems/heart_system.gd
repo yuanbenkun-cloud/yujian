@@ -41,7 +41,7 @@ func take_damage(amount: int = 1) -> void:
 func _build_hud(parent: Node) -> void:
 	_panel = PanelContainer.new()
 	_panel.name = "ComposureHUD"
-	_panel.position = Vector2(8, 7)
+	_panel.position = Vector2(8, 46)
 	_panel.size = Vector2(166, 43)
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.025, 0.035, 0.075, 0.9)

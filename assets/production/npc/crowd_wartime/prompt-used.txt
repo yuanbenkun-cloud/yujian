@@ -1,0 +1,9 @@
+Tool: Codex built-in image_gen
+Date: 2026-09-29
+License: project-generated media
+
+Purpose: fourth-level Chongqing air-raid-shelter evacuee family.
+
+Prompt summary: Six distinct late-1930s/1940s Chongqing civilian evacuees in strict right-facing side view, common baseline and transparent gaps; worker with cloth bundle, mother and child, elderly man with stick, messenger, shopkeeper with case and woman in practical coat. Match the project's crisp restrained pixel art; historically appropriate charcoal, indigo, brown and khaki costume palette; no insignia, weapons, scenery, labels, duplicates, cropped limbs or watermark.
+
+Processing: source lineup split into six alpha sprites, normalized to 48x64 canvases with a shared bottom-center foot anchor.

@@ -18,6 +18,9 @@ const BLAST_RADIUS := 54.0
 const GROUND_EFFECT_SINK := 18.0
 const SHIELD_EFFECT_SINK := 4.0
 
+@export var min_strike_x := 130.0
+@export var max_strike_x := 1260.0
+
 var _phase: int = Phase.COOLDOWN
 var _cooldown := INITIAL_COOLDOWN
 var _warn_left := 0.0
@@ -27,9 +30,10 @@ var _strike_count := 0
 var _active := false
 var _flash: ColorRect
 var _marker: Node2D
-var _marker_rect: ColorRect
+var _marker_visual: CanvasItem
 var _missile: Node2D
 var _missile_flame: Polygon2D
+var _missile_light: PointLight2D
 var _status: Label
 var _shields: Array[Node] = []
 
@@ -57,7 +61,7 @@ func _process(delta: float) -> void:
 			_warn_left -= delta
 			var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.026)
 			_marker.scale = Vector2.ONE * (0.92 + pulse * 0.18)
-			_marker_rect.modulate.a = 0.55 + pulse * 0.45
+			_marker_visual.modulate.a = 0.55 + pulse * 0.45
 			if _flash != null:
 				var access := get_node_or_null("/root/Accessibility")
 				var flash_scale := float(access.get("flash_scale")) if access != null else 1.0
@@ -68,6 +72,8 @@ func _process(delta: float) -> void:
 			_fall_speed += 230.0 * delta
 			_missile.position.y += _fall_speed * delta
 			_missile_flame.scale.y = 0.78 + randf_range(0.0, 0.45)
+			if _missile_light != null:
+				_missile_light.energy = 0.72 + 0.24 * absf(sin(Time.get_ticks_msec() * 0.018))
 			var shield := _shield_at(_pending_x)
 			var impact_y := GROUND_Y
 			if shield != null:
@@ -90,16 +96,16 @@ func _start_warning() -> void:
 	var cur := get_tree().current_scene
 	var player := cur.find_child("zhujue", true, false) as Node2D
 	var base := 180.0 if player == null else player.global_position.x
-	_pending_x = clampf(base + randf_range(-42.0, 72.0), 130.0, 1260.0)
+	_pending_x = clampf(base + randf_range(-42.0, 72.0), min_strike_x, max_strike_x)
 	_phase = Phase.WARNING
 	_warn_left = WARNING_TIME
 	_marker.visible = true
 	_marker.global_position = Vector2(_pending_x, GROUND_Y)
-	_marker_rect.color = Color("#ff4e35")
 	var audio := get_node_or_null("/root/AudioManager")
 	if audio != null:
 		audio.call("play_event", "alert", 0.82, -1.0)
 	if _flash != null:
+		_flash.color = Color("#b92121")
 		_flash.visible = true
 	if _status != null:
 		_status.text = "空袭预警！进入挡板下方，或离开红色落点"
@@ -118,8 +124,7 @@ func _explode(shield: Node) -> void:
 	var impact_pos := _missile.global_position
 	_missile.visible = false
 	_marker.visible = false
-	if _flash != null:
-		_flash.visible = false
+	_spawn_impact_flash(shield != null)
 	_spawn_explosion(impact_pos, shield != null)
 	var audio := get_node_or_null("/root/AudioManager")
 	if audio != null:
@@ -184,11 +189,35 @@ func _build_marker(cur: Node) -> void:
 	_marker = Node2D.new()
 	_marker.name = "BombMarker"
 	_marker.z_index = 35
-	_marker_rect = ColorRect.new()
-	_marker_rect.color = Color("#ff4e35")
-	_marker_rect.size = Vector2(76, 7)
-	_marker_rect.position = Vector2(-38, -3.5)
-	_marker.add_child(_marker_rect)
+	var visual := Node2D.new()
+	visual.name = "AirRaidWarningEmblem"
+	_marker_visual = visual
+	_marker.add_child(visual)
+	var material := CanvasItemMaterial.new()
+	material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	visual.material = material
+	for ring_data in [[25.0, 3.0, Color("#ff553d")], [36.0, 2.0, Color(1.0, 0.72, 0.32, 0.78)]]:
+		var ring := Line2D.new()
+		ring.width = float(ring_data[1])
+		ring.default_color = ring_data[2] as Color
+		var points := PackedVector2Array()
+		for i in range(25):
+			var angle := TAU * float(i) / 24.0
+			# 留出四个断口，让标记不像旧版单条色块。
+			var radius := float(ring_data[0]) + sin(angle * 4.0) * 1.2
+			points.append(Vector2(cos(angle), sin(angle) * 0.36) * radius)
+		ring.points = points
+		visual.add_child(ring)
+	var bomb := Polygon2D.new()
+	bomb.name = "BombIcon"
+	bomb.polygon = PackedVector2Array([Vector2(-4, -18), Vector2(4, -18), Vector2(7, 6), Vector2(0, 16), Vector2(-7, 6)])
+	bomb.color = Color("#ffe0a0")
+	visual.add_child(bomb)
+	for side in [-1.0, 1.0]:
+		var fin := Polygon2D.new()
+		fin.polygon = PackedVector2Array([Vector2(side * 4, -13), Vector2(side * 13, -20), Vector2(side * 7, -5)])
+		fin.color = Color("#ff7048")
+		visual.add_child(fin)
 	cur.add_child.call_deferred(_marker)
 	_marker.visible = false
 
@@ -208,6 +237,14 @@ func _build_missile(cur: Node) -> void:
 	_missile_flame.polygon = PackedVector2Array([Vector2(-4, -19), Vector2(4, -19), Vector2(0, -31)])
 	_missile_flame.color = Color(0.88, 0.72, 0.43, 0.72)
 	_missile.add_child(_missile_flame)
+	_missile_light = PointLight2D.new()
+	_missile_light.name = "MissileGlow"
+	_missile_light.texture = _make_radial_light_texture()
+	_missile_light.texture_scale = 2.2
+	_missile_light.color = Color("#ffad55")
+	_missile_light.energy = 0.82
+	_missile_light.shadow_enabled = false
+	_missile.add_child(_missile_light)
 	cur.add_child.call_deferred(_missile)
 	_missile.visible = false
 
@@ -359,6 +396,20 @@ func _spawn_explosion(pos: Vector2, blocked: bool) -> Node2D:
 			feedback.queue_free()
 	)
 	return feedback
+
+func _spawn_impact_flash(blocked: bool) -> void:
+	# 冲击瞬间给整个洞体一次暖色曝光，让背景与挡板同时被“照亮”；随后快速恢复黑暗。
+	if _flash == null:
+		return
+	_flash.visible = true
+	_flash.color = Color("#ffc36a") if blocked else Color("#ff9a45")
+	_flash.modulate.a = 0.28 if blocked else 0.42
+	var tween := create_tween()
+	tween.tween_property(_flash, "modulate:a", 0.0, 0.52).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.finished.connect(func() -> void:
+		if _flash != null and _phase != Phase.WARNING:
+			_flash.visible = false
+	)
 
 func _make_radial_light_texture() -> GradientTexture2D:
 	var gradient := Gradient.new()

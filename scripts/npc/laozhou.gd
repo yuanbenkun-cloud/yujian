@@ -22,9 +22,7 @@ func on_interact(_player: Node) -> void:
 	if gs == null:
 		return
 	var tier := str(gs.call("get_result_tier"))
-	_delivery_failed = int(gs.get("goods_integrity")) < 100
-	if route != null:
-		route.call("advance_stage", 4)
+	_delivery_failed = int(gs.get("goods_integrity")) < 50
 	gs.call("record_insight", "trust", tier)
 	var node_name: String = TIER_NODES.get(tier, "laozhou_good")
 	ds.call("load_data", "res://assets/dialogue_level3.json")
@@ -44,7 +42,7 @@ func _on_dialogue_ended() -> void:
 		if gs != null:
 			gs.call("reset_goods")
 		if lm != null:
-			lm.call("fail", "染布已经受损，老周无法收货。托付必须完整送达。")
+			lm.call("fail", "染布剩余不足一半，老周无法签收。重新护送这包染布吧。")
 	else:
 		disable_interaction()
 		var portal := get_tree().current_scene.find_child("disanguan_chukou", true, false)
@@ -52,4 +50,5 @@ func _on_dialogue_ended() -> void:
 			portal.call("activate")
 		var route := get_tree().current_scene.find_child("ChoiceSystem", true, false)
 		if route != null:
+			route.call("advance_stage", 4)
 			route.call("show_completed")

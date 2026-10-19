@@ -25,6 +25,7 @@ func activate(player: Node) -> void:
 	set_prompt_visible(false)
 
 func _physics_process(delta: float) -> void:
+	set_meta("locomotion_speed", 0.0)
 	# 阅读木牌或与 NPC 交谈时暂停追兵；否则玩家被冻结后仍会在后台受击并带着活跃对话重载。
 	var ds := get_node_or_null("/root/DialogueSystem")
 	if ds != null and bool(ds.get("active")):
@@ -38,8 +39,10 @@ func _physics_process(delta: float) -> void:
 		return
 	var gap := _player.global_position.x - global_position.x
 	var speed := _get_chase_speed(gap)
+	set_meta("locomotion_speed", speed)
 	global_position.x += signf(gap) * speed * delta
-	global_position.y = _base_y + sin(Time.get_ticks_msec() * 0.018) * 1.5
+	# 行走重心交给贴图帧，保持角色根节点与路面脚线稳定。
+	global_position.y = _base_y
 	if absf(gap) <= HIT_DISTANCE and absf(_player.global_position.y - global_position.y) < 54.0:
 		_hit_player()
 

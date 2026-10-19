@@ -50,17 +50,17 @@ _data = {
 &"ambient": SubResource("Animation_dpwky")
 }
 
-[node name="laozhou" type="Area2D" unique_id=1227157427]
+[node name="laozhou" type="Area2D" unique_id=2080801762]
 script = ExtResource("1_dx2v5")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=1311203749]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=2031556538]
 z_index = 20
 
-[node name="laozhou_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=2018114753]
+[node name="laozhou_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=120277250]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_v1oek")
 
-[node name="laozhou_tishi" type="ColorRect" parent="." unique_id=1357576973]
+[node name="laozhou_tishi" type="ColorRect" parent="." unique_id=414762953]
 z_index = 35
 offset_left = -9.0
 offset_top = -58.0
@@ -68,7 +68,7 @@ offset_right = 9.0
 offset_bottom = -40.0
 color = Color(0.05, 0.08, 0.12, 0.92)
 
-[node name="KeyLabel" type="Label" parent="laozhou_tishi" unique_id=2101625824]
+[node name="KeyLabel" type="Label" parent="laozhou_tishi" unique_id=878792357]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 5.0
@@ -76,6 +76,6 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1, 0.81960785, 0.4, 1)
 text = "E"
 
-[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1298224531]
+[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1577465405]
 libraries/ = SubResource("AnimationLibrary_ct76b")
 autoplay = &"ambient"

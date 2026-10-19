@@ -2,13 +2,13 @@
 
 [ext_resource type="Script" path="res://scripts/ui/kaishi_menu.gd" id="1_c16fg"]
 
-[node name="StartRoot" type="Control" unique_id=1377548041]
+[node name="StartRoot" type="Control" unique_id=573493575]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 640.0
 offset_bottom = 360.0
 
-[node name="KaishiMenu" type="Control" parent="." unique_id=741423780]
+[node name="KaishiMenu" type="Control" parent="." unique_id=1439452525]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0

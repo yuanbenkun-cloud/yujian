@@ -5,6 +5,9 @@ func _ready() -> void:
 	call_deferred("_play_intro")
 
 func _play_intro() -> void:
+	# 全关卡引导已统一接管，避免两块操作说明同时盖住画面。
+	if get_node_or_null("/root/QuestGuide") != null:
+		return
 	var tree := get_tree()
 	if tree == null:
 		return
@@ -35,7 +38,7 @@ func _play_intro() -> void:
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(panel)
 	var title := Label.new()
-	title.text = "护送目标 · 六人，一个都不能少"
+	title.text = "眼前的路 · 先把大家带出去"
 	title.position = Vector2(18, 10)
 	title.size = Vector2(384, 22)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -43,7 +46,7 @@ func _play_intro() -> void:
 	title.add_theme_color_override("font_color", Color("#e8b04b"))
 	panel.add_child(title)
 	var story := Label.new()
-	story.text = "跟紧灯光，利用挡板躲避落弹，把所有人带到出口。"
+	story.text = "沿着挡板往前走。碰见落单的人，就叫上他们一起走。"
 	story.position = Vector2(18, 36)
 	story.size = Vector2(384, 22)
 	story.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

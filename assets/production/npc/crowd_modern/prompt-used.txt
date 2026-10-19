@@ -1,0 +1,9 @@
+Tool: Codex built-in image_gen
+Date: 2026-09-29
+License: project-generated media
+
+Purpose: first-level modern Chongqing moving-crowd family.
+
+Prompt summary: Six distinct full-body modern Chongqing pedestrians in strict right-facing side view, common baseline and transparent gaps; office worker, tourist, elderly local with fan, young woman, delivery worker and umbrella-carrying parent. Match the project's crisp warm-muted pixel-art proportions, outline and upper-left lighting; readable at roughly 32x48; transparent background; no scenery, labels, duplicates, cropped limbs or watermark.
+
+Processing: source lineup split into six alpha sprites, normalized to 48x64 canvases with a shared bottom-center foot anchor.

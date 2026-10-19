@@ -5,6 +5,7 @@ extends Control
 ## 说话方高亮；另一方变暗；旁白/独白等叙述行两侧变灰。
 
 signal advance_requested
+signal line_completed
 
 const VIEW_SIZE := Vector2(640, 360)
 const BOX_TOP := 248.0
@@ -14,20 +15,20 @@ const INPUT_GUARD_MSEC := 120
 
 const PORTRAITS := {
 	"陈默": ["res://assets/production/portraits/chenmo-v2.png", true],
-	"传单阿姨": ["res://assets/portraits/flyer_lady.png", false],
-	"游客甲": ["res://assets/portraits/tourist.png", false],
-	"游客": ["res://assets/portraits/tourist.png", false],
-	"摊贩": ["res://assets/portraits/vendor.png", false],
-	"讲历史老人": ["res://assets/portraits/old_man.png", false],
-	"老人": ["res://assets/portraits/old_man.png", false],
-	"老匠人": ["res://assets/portraits/old_artisan.png", false],
-	"阿明": ["res://assets/portraits/aming.png", false],
-	"老掌柜": ["res://assets/portraits/old_shopkeeper.png", false],
-	"胖掌柜": ["res://assets/portraits/fat_teahouse.png", false],
-	"码头帮工": ["res://assets/portraits/helper.png", false],
-	"帮工": ["res://assets/portraits/helper.png", false],
-	"老周": ["res://assets/portraits/laozhou.png", false],
-	"避难群众": ["res://assets/portraits/crowd.png", false],
+	"传单阿姨": ["res://assets/production/npc/cast_v3/flyer_lady/portrait.png", false],
+	"游客甲": ["res://assets/production/npc/cast_v3/tourist/portrait.png", false],
+	"游客": ["res://assets/production/npc/cast_v3/tourist/portrait.png", false],
+	"摊贩": ["res://assets/production/npc/cast_v3/vendor/portrait.png", false],
+	"讲历史老人": ["res://assets/production/npc/cast_v3/old_man/portrait.png", false],
+	"老人": ["res://assets/production/npc/cast_v3/old_man/portrait.png", false],
+	"老匠人": ["res://assets/production/npc/cast_v3/old_artisan/portrait.png", false],
+	"阿明": ["res://assets/production/npc/cast_v3/aming/portrait.png", false],
+	"老掌柜": ["res://assets/production/npc/cast_v3/old_shopkeeper/portrait.png", false],
+	"胖掌柜": ["res://assets/production/npc/cast_v3/fat_teahouse/portrait.png", false],
+	"码头帮工": ["res://assets/production/npc/cast_v3/helper/portrait.png", false],
+	"帮工": ["res://assets/production/npc/cast_v3/helper/portrait.png", false],
+	"老周": ["res://assets/production/npc/cast_v3/laozhou/portrait.png", false],
+	"避难群众": ["res://assets/production/npc/cast_v3/refugee/portrait.png", false],
 }
 
 var _typing: bool = false
@@ -193,16 +194,19 @@ func _type_tick() -> void:
 		_typing = false
 		_waiting = true
 		_continue_lb.visible = true
+		line_completed.emit()
 
 func show_options(opts: Array) -> void:
 	_opts_shown = true
 	_continue_lb.visible = false
 	for c in _opts_box.get_children():
+		_opts_box.remove_child(c)
 		c.queue_free()
 	var idx := 0
 	for opt: Dictionary in opts:
 		var btn := Button.new()
 		btn.text = str(opt.get("label", ""))
+		btn.custom_minimum_size = Vector2(368, 30)
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		var i := idx
 		btn.pressed.connect(func() -> void:
@@ -237,7 +241,8 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventKey and event.echo:
 		return
-	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+	var click: bool = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed
+	if click or event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		if _consume_advance_press():
 			get_viewport().set_input_as_handled()
 
@@ -256,6 +261,7 @@ func _consume_advance_press() -> bool:
 		_typing = false
 		_waiting = true
 		_continue_lb.visible = true
+		line_completed.emit()
 		return true
 	if _waiting:
 		_waiting = false

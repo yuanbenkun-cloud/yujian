@@ -50,17 +50,17 @@ _data = {
 &"ambient": SubResource("Animation_aq0jy")
 }
 
-[node name="laojiangren" type="Area2D" unique_id=1620505342]
+[node name="laojiangren" type="Area2D" unique_id=526668677]
 script = ExtResource("1_p1wc2")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=384120936]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=2099777306]
 z_index = 20
 
-[node name="laojiangren_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=403337704]
+[node name="laojiangren_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=980635880]
 position = Vector2(0, -20)
 shape = SubResource("RectangleShape2D_im48m")
 
-[node name="laojiangren_tishi" type="ColorRect" parent="." unique_id=668511375]
+[node name="laojiangren_tishi" type="ColorRect" parent="." unique_id=1036517597]
 z_index = 35
 offset_left = -9.0
 offset_top = -58.0
@@ -68,7 +68,7 @@ offset_right = 9.0
 offset_bottom = -40.0
 color = Color(0.05, 0.08, 0.12, 0.92)
 
-[node name="KeyLabel" type="Label" parent="laojiangren_tishi" unique_id=156995787]
+[node name="KeyLabel" type="Label" parent="laojiangren_tishi" unique_id=914489649]
 layout_mode = 0
 offset_left = 5.0
 offset_right = 5.0
@@ -76,6 +76,6 @@ theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1, 0.81960785, 0.4, 1)
 text = "E"
 
-[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1030761295]
+[node name="AmbientAnimationPlayer" type="AnimationPlayer" parent="." unique_id=622469817]
 libraries/ = SubResource("AnimationLibrary_t5l4p")
 autoplay = &"ambient"

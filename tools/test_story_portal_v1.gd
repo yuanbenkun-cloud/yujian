@@ -43,7 +43,7 @@ func _run() -> void:
 	if parsed is Dictionary:
 		for line: Dictionary in parsed.get("old_man", {}).get("lines", []):
 			old_man_text += str(line.get("text", ""))
-	_check("洪崖门" in old_man_text and "旁观者肯回头" in old_man_text, "第五关对白以人物对话回收裂隙来源")
+	_check("洪崖门" in old_man_text and "只顾赶路" in old_man_text and "回头重走" in old_man_text, "第五关对白以日常聊天回收裂隙来源")
 	print("[RESULT] %s" % ("PASS" if _ok else "FAIL"))
 	quit(0 if _ok else 1)
 

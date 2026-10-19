@@ -1,12 +1,15 @@
 extends "res://scripts/npc/interactable.gd"
 
-## 观景台拍照点（第五关）：拍照/不拍二选一 → 完整结局 → 返回标题页。
+## 观景台拍照点（第五关）：记忆集齐后直接进入拍照/不拍二选一。
 
 func on_interact(_player: Node) -> void:
 	var route := get_tree().current_scene.find_child("MemoryRoute", true, false)
 	if route != null and not bool(route.call("can_finish")):
 		route.call("show_missing")
 		return
+	_start_dialogue()
+
+func _start_dialogue() -> void:
 	var ds := get_node_or_null("/root/DialogueSystem")
 	if ds == null:
 		return

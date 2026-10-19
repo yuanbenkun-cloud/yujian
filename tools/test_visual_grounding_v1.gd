@@ -75,7 +75,7 @@ func _run() -> void:
 			var aunt := current_scene.find_child("chuandanayi", true, false) as Node2D
 			var aunt_visual := aunt.find_child("SkinAnim", true, false) as AnimatedSprite2D if aunt != null else null
 			var aunt_frame := aunt_visual.sprite_frames.get_frame_texture(&"idle", 0) if aunt_visual != null else null
-			_check(aunt_visual != null and aunt_frame != null and _texture_source_path(aunt_frame).ends_with("flyer-lady-return-idle-v2.png") and aunt_visual.material == null, "第五关阿姨使用新生成的原生透明实色立绘")
+			_check(aunt_visual != null and aunt_frame != null and _texture_source_path(aunt_frame).ends_with("npc/redesign/flyer_lady/sheet-transparent.png") and aunt_visual.material == null, "第五关阿姨使用统一新版透明帧表")
 			for prop_name in ["InfoBoardVisual", "ScenicViewerVisual", "PhotoCameraVisual"]:
 				var prop := current_scene.find_child(prop_name, true, false) as Sprite2D
 				_check(prop != null and absf(float(prop.get_meta("grounded_visible_bottom_y", -999.0)) - 247.0) < 0.1, "%s 压入地面" % prop_name)

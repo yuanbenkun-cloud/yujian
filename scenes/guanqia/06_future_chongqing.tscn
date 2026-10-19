@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/future_bonus.gd" id="1_future"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/06_future/sky.png" id="2_sky"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/06_future/city-backdrop-v6.png" id="3_far"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/06_future/mid.png" id="4_mid"]
+[ext_resource type="Texture2D" path="res://assets/production/future/sky-shuttle-v1/shuttle.png" id="5_shuttle"]
+[ext_resource type="PackedScene" path="res://scenes/renwu/zhujue/zhujue.tscn" id="8_player"]
+
+[sub_resource type="RectangleShape2D" id="GroundShape"]
+size = Vector2(3400, 40)
+
+[node name="FutureChongqing" type="Node2D"]
+script = ExtResource("1_future")
+metadata/camera_right_limit = 3260.0
+
+[node name="FutureLayers" type="Node2D" parent="."]
+
+[node name="Sky" type="Sprite2D" parent="FutureLayers"]
+z_index = -30
+texture = ExtResource("2_sky")
+centered = false
+scale = Vector2(0.5, 0.5)
+
+[node name="Far" type="Sprite2D" parent="FutureLayers"]
+z_index = -20
+texture = ExtResource("3_far")
+centered = false
+scale = Vector2(0.5, 0.5)
+
+[node name="Mid" type="Sprite2D" parent="FutureLayers"]
+z_index = -10
+texture = ExtResource("4_mid")
+centered = false
+scale = Vector2(0.5, 0.5)
+
+[node name="SkyShuttle" type="Sprite2D" parent="FutureLayers"]
+z_index = -4
+texture_filter = 1
+texture = ExtResource("5_shuttle")
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(1630, 302)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("GroundShape")
+
+[node name="zhujue" parent="." instance=ExtResource("8_player")]
+position = Vector2(88, 282)
+
+[node name="UI_Base" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="ChapterLabel" type="Label" parent="UI_Base"]
+visible = false
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 318.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(0.72, 0.96, 1, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.06, 0.1, 0.9)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = "第六章 · 未来重庆：记忆失真"

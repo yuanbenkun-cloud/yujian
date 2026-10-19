@@ -17,14 +17,19 @@ var last_choice_next := ""
 var _prelude_layer: CanvasLayer = null
 var _prelude_serial := 0
 
+func has_dialogue_node(node_id: String) -> bool:
+	return _data.has(node_id) and _data[node_id] is Dictionary
+
 func load_data(path: String) -> bool:
 	var f := FileAccess.open(path, FileAccess.READ)
 	if f == null:
+		_data.clear()
 		return false
 	var parsed = JSON.parse_string(f.get_as_text())
 	if parsed is Dictionary:
 		_data = parsed
 		return true
+	_data.clear()
 	return false
 
 func start_dialogue(node_id: String, speaker: String = "") -> void:
@@ -50,6 +55,8 @@ func start_dialogue(node_id: String, speaker: String = "") -> void:
 	## 关键：连接面板“推进请求”信号（每句按 E 后由面板发出）
 	if not _panel.is_connected("advance_requested", _on_advance):
 		_panel.connect("advance_requested", _on_advance)
+	if not _panel.is_connected("line_completed", _on_line_completed):
+		_panel.connect("line_completed", _on_line_completed)
 	_panel.show()
 	_open_node(node_id)
 
@@ -164,6 +171,11 @@ func _on_advance() -> void:
 	if _panel != null and bool(_panel.call("has_options")):
 		return
 	_next_line()
+
+func _on_line_completed() -> void:
+	# 最后一句读完就给出选择，不再要求一次额外的“继续”。
+	if active and _queue.is_empty() and not _options.is_empty() and is_instance_valid(_panel):
+		_panel.call("show_options", _options)
 
 func choose(index: int) -> void:
 	if index < 0 or index >= _options.size():

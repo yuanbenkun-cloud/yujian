@@ -29,5 +29,13 @@
     "03": "ancient Zhongshan town",
     "04": "wartime air-raid shelter",
     "05": "Hongyadong return at dawn"
+  },
+  "future_bonus_background": {
+    "id": "06_future",
+    "name": "future cyberpunk Chongqing blue hour",
+    "folder": "assets/production/backgrounds/06_future",
+    "status": "art_ready_scene_pending",
+    "dynamic_layer": "monorail.png",
+    "foreground_occluder": "monorail-occluder.png"
   }
 }

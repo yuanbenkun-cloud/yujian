@@ -4,7 +4,7 @@ extends Area2D
 @export var illustration: Texture2D
 @export var eyebrow := "磁器口 · 旧窑道"
 @export var title := "石壁后，水声越来越近"
-@export_multiline var caption := "热浪烤得陈默睁不开眼，岩缝深处却渗出冰冷的江水。老匠人把锤柄塞进他手里。\n‘先烧透，再淬裂。听见石头发脆，才落锤。早一步，窑和人都保不住。’"
+@export_multiline var caption := "热浪烤得陈默睁不开眼，岩缝里却还在往外渗水。老匠人把锤柄塞进他手里。\n‘别急着砸。先烧透，再过水，听见石头发脆了再下锤。照我说的来。’"
 
 var _played := false
 var _showing := false

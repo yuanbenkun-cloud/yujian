@@ -13,6 +13,12 @@ var talking := false:
 			_sprite.speed_scale = 1.45 if talking else 1.0
 
 var _sprite: AnimatedSprite2D
+var facing: int = -1
+
+func set_facing(direction: int) -> void:
+	facing = 1 if direction >= 0 else -1
+	if _sprite != null:
+		_sprite.flip_h = facing > 0
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -41,3 +47,4 @@ func _build_animation() -> void:
 	_sprite.speed_scale = 1.45 if talking else 1.0
 	add_child(_sprite)
 	_sprite.play("hover")
+	set_facing(facing)

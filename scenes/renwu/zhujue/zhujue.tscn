@@ -175,20 +175,20 @@ _data = {
 &"land": SubResource("Animation_wd52p")
 }
 
-[node name="zhujue" type="CharacterBody2D" unique_id=701791354]
+[node name="zhujue" type="CharacterBody2D" unique_id=218374774]
 script = ExtResource("1_42kwi")
 
-[node name="zhujue_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=1386804755]
+[node name="zhujue_pengzhuangtiji" type="CollisionShape2D" parent="." unique_id=1668940488]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_mr466")
 
-[node name="zhujue_jiaohuquyu" type="Area2D" parent="." unique_id=713597211]
+[node name="zhujue_jiaohuquyu" type="Area2D" parent="." unique_id=911420044]
 
-[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="zhujue_jiaohuquyu" unique_id=1052566039]
+[node name="@CollisionShape2D@2" type="CollisionShape2D" parent="zhujue_jiaohuquyu" unique_id=1323499323]
 position = Vector2(0, -18)
 shape = SubResource("RectangleShape2D_p7t5r")
 
-[node name="zhujue_shexiangji" type="Camera2D" parent="." unique_id=738979219]
+[node name="zhujue_shexiangji" type="Camera2D" parent="." unique_id=1040686948]
 offset = Vector2(0, -72)
 limit_left = -700
 limit_top = -120
@@ -199,15 +199,15 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 script = ExtResource("2_b882f")
 
-[node name="VisualPivot" type="Node2D" parent="." unique_id=1688051167]
+[node name="VisualPivot" type="Node2D" parent="." unique_id=2021276717]
 z_index = 20
 
-[node name="zhujue_donghua" type="AnimatedSprite2D" parent="VisualPivot" unique_id=9404536]
+[node name="zhujue_donghua" type="AnimatedSprite2D" parent="VisualPivot" unique_id=2042177657]
 centered = false
 script = ExtResource("3_u1vsn")
 
-[node name="FeedbackAnimationPlayer" type="AnimationPlayer" parent="." unique_id=435194890]
+[node name="FeedbackAnimationPlayer" type="AnimationPlayer" parent="." unique_id=1807827392]
 libraries/ = SubResource("AnimationLibrary_r1j3b")
 
-[node name="zhujue_anim_kongzhi" type="Node" parent="." unique_id=987913060]
+[node name="zhujue_anim_kongzhi" type="Node" parent="." unique_id=2123731541]
 script = ExtResource("4_t8bc1")

@@ -14,6 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
+config/name="渝见"
 run/main_scene="res://scenes/opening_video.tscn"
 config/features=PackedStringArray("4.7")
 
@@ -26,6 +27,9 @@ AudioManager="*res://autoload/audio_manager.gd"
 Accessibility="*res://autoload/accessibility.gd"
 StoryDirector="*res://autoload/story_director.gd"
 Companion="*res://autoload/companion.gd"
+QuestGuide="*res://autoload/quest_guide.gd"
+ChapterArrival="*res://autoload/chapter_arrival.gd"
+YudengChat="*res://autoload/yudeng_chat.gd"
 McpInteractionServer="*res://autoload/mcp_interaction_server.gd"
 Skinner="*res://autoload/skinner.gd"
 

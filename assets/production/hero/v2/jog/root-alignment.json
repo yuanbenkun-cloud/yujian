@@ -1,0 +1,12 @@
+{
+  "translation_only": true,
+  "head_center_x": 64,
+  "grounded_feet_y": 125,
+  "flight_frames": [
+    4,
+    5,
+    9,
+    10
+  ],
+  "no_per_frame_scaling": true
+}
